@@ -20,5 +20,8 @@
   "dependencies": {
     "restler": "^3.2.2"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "prettier": "2.2.1"
+  }
 }
