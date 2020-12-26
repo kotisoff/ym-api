@@ -1,7 +1,10 @@
 import { get as authRequest } from "./auth-request.js";
 import { get as apiRequest } from "./api-request.js";
+import { get as directLinkRequest } from "./direct-link-request.js";
 import fallbackConfig from "./config.js";
 import Rest from "./rest.js";
+import { parseStringPromise } from "xml2js";
+import crypto from "crypto";
 
 const rest = new Rest();
 
@@ -334,5 +337,68 @@ export default class YandexMusicApi {
       });
 
     return rest.post(request);
+  }
+
+  /**
+   * GET: /tracks/[track_id]
+   * Get an array of playlists with tracks
+   * @param   {String} trackId The track ID
+   * @returns {Promise}
+   */
+  getTrack(trackId) {
+    const request = apiRequest()
+      .setPath("/tracks/" + trackId)
+      .addHeaders(this._getAuthHeader());
+
+    return rest.get(request);
+  }
+
+  /**
+   * GET: /tracks/[track_id]/supplement
+   * Get an array of playlists with tracks
+   * @param   {String} trackId The track ID
+   * @returns {Promise}
+   */
+  getTrackSupplement(trackId) {
+    const request = apiRequest()
+      .setPath("/tracks/" + trackId + "/supplement")
+      .addHeaders(this._getAuthHeader());
+
+    return rest.get(request);
+  }
+
+  /**
+   * GET: /tracks/[track_id]/download-info
+   * Get track download information
+   * @param   {String} trackId The track ID
+   * @returns {Promise}
+   */
+  getTrackDownloadInfo(trackId) {
+    const request = apiRequest()
+      .setPath("/tracks/" + trackId + "/download-info")
+      .addHeaders(this._getAuthHeader());
+
+    return rest.get(request);
+  }
+
+  /**
+   * Get track direct link
+   * @param   {String} downloadUrl The track download url
+   * @returns {Promise}
+   */
+  async getTrackDirectLink(downloadUrl) {
+    const request = directLinkRequest(downloadUrl);
+    const xml = await rest.get(request);
+    const parsedXml = await parseStringPromise(xml);
+    const host = parsedXml["download-info"].host[0];
+    const path = parsedXml["download-info"].path[0];
+    const ts = parsedXml["download-info"].ts[0];
+    const s = parsedXml["download-info"].s[0];
+    const sign = crypto
+      .createHash("md5")
+      .update("XGRlBW9FXlekgbPrRHuSiA" + path.slice(1) + s)
+      .digest("hex");
+
+    return `https://${host}/get-mp3/${sign}/${ts}${path}`;
   }
 }
