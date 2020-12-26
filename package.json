@@ -18,7 +18,7 @@
     "yandex.music"
   ],
   "dependencies": {
-    "restler": "^3.2.2"
+    "axios": "^0.21.1"
   },
   "type": "module",
   "devDependencies": {

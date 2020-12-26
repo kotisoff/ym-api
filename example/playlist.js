@@ -39,7 +39,7 @@ api
     var options = { "rich-tracks": true };
 
     return api
-      .getPlaylists(null, [playlist.kind], options)
+      .getPlaylists([playlist.kind], null, options)
       .then(function (playlist) {
         playlist[0].tracks.forEach(function (item) {
           console.log(item.track.title + " - " + item.track.artists[0].name);
