@@ -1,4 +1,4 @@
-import YandexMusicApi from "../src/yandex-music-api.js";
+import YandexMusicApi from "../src/ym-api.js";
 import config from "./config.js";
 const api = new YandexMusicApi();
 

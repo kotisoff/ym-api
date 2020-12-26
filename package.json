@@ -1,9 +1,9 @@
 {
-  "name": "yandex-music-api",
+  "name": "ym-api",
   "version": "0.1.0",
-  "homepage": "https://github.com/kontsevoye/yandex-music-api",
+  "homepage": "https://github.com/kontsevoye/ym-api",
   "description": "A Node.js wrapper for the Yandex.Music API (Unofficial) http://music.yandex.ru",
-  "main": "src/yandex-music-api.js",
+  "main": "src/ym-api.js",
   "author": "Evgeny Kontsevoy",
   "contributors": [
     "Anton Petrov <petrov.aap@gmail.com> (https://itsmepetrov.com)"
@@ -11,7 +11,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kontsevoye/yandex-music-api.git"
+    "url": "https://github.com/kontsevoye/ym-api.git"
   },
   "keywords": [
     "yandex",

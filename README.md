@@ -5,13 +5,13 @@ This is a Node.js wrapper for the [Yandex.Music](http://music.yandex.ru/) API th
 ## Installation
 
 ```sh
-npm install yandex-music-api
+npm install ym-api
 ```
 
 ## Usage
 
 ```js
-import YandexMusicApi from "yandex-music-api";
+import YandexMusicApi from "ym-api";
 const api = new YandexMusicApi();
 
 (async () => {
