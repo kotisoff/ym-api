@@ -1,7 +1,7 @@
-var YandexMusicApi = require('../lib/yandex-music-api'),
-    config = require('./config');
+import YandexMusicApi from '../lib/yandex-music-api.js';
+import config from './config.js';
 
-var api = new YandexMusicApi();
+const api = new YandexMusicApi();
 
 api.init(config.user)
     .then(function() {
