@@ -57,5 +57,5 @@ This library provides following functions:
 
 ## Acknowledgements
 
-* [itsmepetrov/yandex-music-api](https://github.com/itsmepetrov/yandex-music-api)
-* [MarshalX/yandex-music-api](https://github.com/MarshalX/yandex-music-api)
+- [itsmepetrov/yandex-music-api](https://github.com/itsmepetrov/yandex-music-api)
+- [MarshalX/yandex-music-api](https://github.com/MarshalX/yandex-music-api)
