@@ -11,15 +11,18 @@ npm install yandex-music-api
 ## Usage
 
 ```js
-var YandexMusicApi = require("yandex-music-api");
+import YandexMusicApi from "yandex-music-api";
+const api = new YandexMusicApi();
 
-var api = new YandexMusicApi();
-
-api
-  .init({ username: "example@yandex.ru", password: "password" })
-  .then(function () {
-    // place code here
-  });
+(async () => {
+  try {
+    await api.init({ username: "example@yandex.ru", password: "password" });
+    const result = await api.search("gorillaz", { type: "artist" });
+    console.log({ result });
+  } catch (e) {
+    console.log(`api error ${e.message}`);
+  }
+})();
 ```
 
 This library provides following functions:
