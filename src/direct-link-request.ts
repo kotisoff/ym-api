@@ -1,6 +1,7 @@
-import Request from "./request.js";
+import Request from "./request";
+import { URL } from "url";
 
-export function get(url) {
+export function get(url: string) {
   const parsedUrl = new URL(url);
   return new Request({
     scheme: parsedUrl.protocol.replace(":", ""),
