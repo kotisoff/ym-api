@@ -1,6 +1,6 @@
 {
   "name": "ym-api",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "homepage": "https://github.com/kontsevoye/ym-api",
   "description": "A Node.js wrapper for the Yandex.Music API (Unofficial) http://music.yandex.ru",
   "main": "dist/ym-api.js",
