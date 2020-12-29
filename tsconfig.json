@@ -4,6 +4,7 @@
   "exclude": ["node_modules", "**/*.spec.ts"],
   "compilerOptions": {
     "outDir": "./dist",
-    "declaration": true
+    "declaration": true,
+    "strict": true
   }
 }
