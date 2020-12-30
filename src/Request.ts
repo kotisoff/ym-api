@@ -4,9 +4,10 @@ import {
   RequestQuery,
   RequestBodyData,
   RequestConfig,
+  RequestInterface,
 } from "./types";
 
-export default class Request {
+export default class Request implements RequestInterface {
   private scheme: string;
   private host: string;
   private port: number;
@@ -24,7 +25,7 @@ export default class Request {
     this.query = config.query || {};
     this.bodyData = config.bodyData || {};
   }
-  setPath(path: string): Request {
+  setPath(path: string): RequestInterface {
     this.path = path;
 
     return this;
@@ -32,12 +33,12 @@ export default class Request {
   getHeaders(): RequestHeaders {
     return this.headers;
   }
-  setHeaders(headers: RequestHeaders): Request {
+  setHeaders(headers: RequestHeaders): RequestInterface {
     this.headers = headers;
 
     return this;
   }
-  addHeaders(headers: RequestHeaders): Request {
+  addHeaders(headers: RequestHeaders): RequestInterface {
     if (!this.headers) {
       this.headers = headers;
     } else {
@@ -51,12 +52,12 @@ export default class Request {
   getQuery(): RequestQuery {
     return this.query;
   }
-  setQuery(query: RequestQuery): Request {
+  setQuery(query: RequestQuery): RequestInterface {
     this.query = query;
 
     return this;
   }
-  addQuery(query: RequestQuery): Request {
+  addQuery(query: RequestQuery): RequestInterface {
     if (!this.query) {
       this.query = query;
     } else {
@@ -68,7 +69,7 @@ export default class Request {
     return this;
   }
   getQueryAsString(): string {
-    if (!this.query) return "";
+    if (Object.keys(this.query).length < 1) return "";
 
     const params = [];
 
@@ -84,12 +85,12 @@ export default class Request {
   getBodyDataString(): string {
     return querystring.stringify(this.bodyData);
   }
-  setBodyData(bodyData: RequestBodyData): Request {
+  setBodyData(bodyData: RequestBodyData): RequestInterface {
     this.bodyData = bodyData;
 
     return this;
   }
-  addBodyData(bodyData: RequestBodyData): Request {
+  addBodyData(bodyData: RequestBodyData): RequestInterface {
     if (!this.bodyData) {
       this.bodyData = bodyData;
     } else {

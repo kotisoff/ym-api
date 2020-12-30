@@ -1,7 +1,6 @@
-import YandexMusicApi from "../src/ym-api";
+import { YMApi } from "../src";
 import config from "./config";
-
-const api = new YandexMusicApi();
+const api = new YMApi();
 
 (async () => {
   try {

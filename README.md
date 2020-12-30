@@ -11,13 +11,13 @@ npm install ym-api
 ## Usage
 
 ```js
-import YandexMusicApi from "ym-api";
-const api = new YandexMusicApi();
+import { YMApi } from "ym-api";
+const api = new YMApi();
 
 (async () => {
   try {
     await api.init({ username: "example@yandex.ru", password: "password" });
-    const result = await api.search("gorillaz", { type: "artist" });
+    const result = await api.searchArtists("gorillaz");
     console.log({ result });
   } catch (e) {
     console.log(`api error ${e.message}`);
@@ -25,7 +25,11 @@ const api = new YandexMusicApi();
 })();
 ```
 
-This library provides following functions:
+## Available methods
+
+This library provides following methods:
+
+### Plain API
 
 #### Users
 
@@ -36,12 +40,16 @@ This library provides following functions:
 
 - getGenres
 - search
+- searchArtists
+- searchTracks
+- searchAlbums
+- searchAll
 
 #### Playlist
 
-- getUserPlaylists
 - getPlaylist
 - getPlaylists
+- getUserPlaylists
 - createPlaylist
 - removePlaylist
 - renamePlaylist
@@ -51,9 +59,44 @@ This library provides following functions:
 #### Tracks
 
 - getTrack
+- getSingleTrack
 - getTrackSupplement
 - getTrackDownloadInfo
 - getTrackDirectLink
+
+#### Album
+
+- getAlbums
+- getAlbum
+- getAlbumWithTracks
+
+#### Artist
+
+- getArtist
+- getArtists
+
+### Wrapped API
+
+Almost all methods of the wrapped api can be called with a entity id or url
+
+#### Tracks
+
+- getConcreteDownloadInfo
+- getMp3DownloadInfo
+- getMp3DownloadUrl
+
+#### Playlist
+
+- getPlaylist
+
+#### Album
+
+- getAlbum
+- getAlbumWithTracks
+
+#### Artist
+
+- getArtist
 
 ## Acknowledgements
 

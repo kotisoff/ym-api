@@ -247,12 +247,6 @@ export type ApiConfig = {
     UUID: string;
     PACKAGE_NAME: string;
   };
-  user: {
-    USERNAME: string;
-    PASSWORD: string;
-    TOKEN: string;
-    UID: number;
-  };
 };
 
 export type ApiInitConfig = {
@@ -278,7 +272,9 @@ type ArtistCounts = {
 type Region = "RUSSIA_PREMIUM" | "RUSSIA" | string;
 type AlbumType = "compilation" | string;
 type TrackPosition = { volume: number; index: number };
-type Album = {
+
+export type AlbumVolume = Array<Track>;
+export type Album = {
   id: number;
   storageDir: string;
   coverUri: string;
@@ -292,10 +288,13 @@ type Album = {
   artists: Array<Artist>;
   availableRegions: Array<Region>;
   labels: Array<string>;
+  volumes?: Array<AlbumVolume>;
 };
+export type AlbumWithTracks = Required<Album>;
+
 type TrackMajor = { id: number; name: string };
 type TrackNormalization = { gain: number; peak: number };
-type Track = {
+export type Track = {
   id: number;
   available: boolean;
   availableAsRbt: boolean;
@@ -319,7 +318,7 @@ type Track = {
   ogImage?: string;
 };
 
-type Artist = {
+export type Artist = {
   id: number;
   name: string;
   composer: boolean;
@@ -330,6 +329,15 @@ type Artist = {
   genres: Array<Genre>;
   popularTracks: Array<Track>;
   regions: Array<Region>;
+  albums?: Array<Album>;
+  alsoAlbums?: Array<Album>;
+  similarArtists?: Array<Artist>;
+};
+export type FilledArtist = {
+  artist: Artist;
+  albums: Array<Album>;
+  alsoAlbums: Array<Album>;
+  similarArtists: Array<Artist>;
 };
 
 export type SearchResponse = {
@@ -358,6 +366,17 @@ export type SearchResponse = {
   };
 };
 
+export type SearchAllResponse = Required<SearchResponse>;
+export type SearchArtistsResponse = Required<
+  Omit<Omit<SearchResponse, "albums">, "tracks">
+>;
+export type SearchTracksResponse = Required<
+  Omit<Omit<SearchResponse, "artists">, "albums">
+>;
+export type SearchAlbumsResponse = Required<
+  Omit<Omit<SearchResponse, "artists">, "tracks">
+>;
+
 export type GetTrackResponse = Array<Track>;
 
 type Language = "en" | string;
@@ -385,7 +404,7 @@ export type GetTrackSupplementResponse = {
 };
 
 type AudioCodec = "mp3" | "aac" | string;
-type DownloadInfo = {
+export type DownloadInfo = {
   codec: AudioCodec;
   gain: boolean;
   preview: boolean;
@@ -399,3 +418,72 @@ export type InitResponse = {
   access_token: string;
   uid: number;
 };
+
+export type ArtistId = number;
+export type ArtistUrl = string;
+
+export type AlbumId = number;
+export type AlbumUrl = string;
+
+export type TrackId = number;
+export type TrackUrl = string;
+
+export type PlaylistId = number;
+export type PlaylistUrl = string;
+
+export type UserId = number;
+export type UserName = string;
+
+export interface UrlExtractorInterface {
+  extractTrackId(url: string): number;
+  extractAlbumId(url: string): number;
+  extractArtistId(url: string): number;
+  extractPlaylistId(url: string): { id: number; user: string };
+}
+
+export interface RequestInterface {
+  setPath(path: string): RequestInterface;
+  getHeaders(): RequestHeaders;
+  setHeaders(headers: RequestHeaders): RequestInterface;
+  addHeaders(headers: RequestHeaders): RequestInterface;
+  getQuery(): RequestQuery;
+  setQuery(query: RequestQuery): RequestInterface;
+  addQuery(query: RequestQuery): RequestInterface;
+  getQueryAsString(): string;
+  getBodyData(): RequestBodyData;
+  getBodyDataString(): string;
+  setBodyData(bodyData: RequestBodyData): RequestInterface;
+  addBodyData(bodyData: RequestBodyData): RequestInterface;
+  getURI(): string;
+  getURL(): string;
+}
+
+export interface HttpClientInterface {
+  get(request: RequestInterface): Promise<Response>;
+  post(request: RequestInterface): Promise<Response>;
+}
+
+export type ApiUser = {
+  username: string;
+  password: string;
+  token: string;
+  uid: number;
+};
+
+export enum DownloadTrackQuality {
+  High = "high",
+  Low = "low",
+}
+
+export enum DownloadTrackCodec {
+  MP3 = "mp3",
+  AAC = "aac",
+}
+
+export type SearchOptions = {
+  type?: SearchType;
+  page?: number;
+  nococrrect?: boolean;
+};
+
+export type ConcreteSearchOptions = Omit<SearchOptions, "type">;

@@ -1,8 +1,6 @@
-import { get as authRequest } from "./auth-request";
-import { get as apiRequest } from "./api-request";
-import { get as directLinkRequest } from "./direct-link-request";
+import { authRequest, apiRequest, directLinkRequest } from "./PreparedRequest";
 import fallbackConfig from "./config";
-import Rest from "./rest";
+import HttpClient from "./HttpClient";
 import { parseStringPromise } from "xml2js";
 import crypto from "crypto";
 import {
@@ -10,7 +8,6 @@ import {
   ApiInitConfig,
   InitResponse,
   GetGenresResponse,
-  SearchType,
   SearchResponse,
   Playlist,
   GetTrackResponse,
@@ -19,38 +16,40 @@ import {
   ObjectResponse,
   GetFeedResponse,
   GetAccountStatusResponse,
+  Track,
+  TrackId,
+  HttpClientInterface,
+  ApiUser,
+  SearchOptions,
+  ConcreteSearchOptions,
+  SearchAllResponse,
+  SearchArtistsResponse,
+  SearchTracksResponse,
+  SearchAlbumsResponse,
+  AlbumId,
+  Album,
+  AlbumWithTracks,
+  FilledArtist,
+  Artist,
+  ArtistId,
 } from "./types";
 
-const rest = new Rest();
-
-export default class YandexMusicApi {
-  private config: ApiConfig = {
-    oauth: {
-      CLIENT_ID: fallbackConfig.oauth.CLIENT_ID,
-      CLIENT_SECRET: fallbackConfig.oauth.CLIENT_SECRET,
-    },
-
-    fake_device: {
-      DEVICE_ID: fallbackConfig.fake_device.DEVICE_ID,
-      UUID: fallbackConfig.fake_device.UUID,
-      PACKAGE_NAME: fallbackConfig.fake_device.PACKAGE_NAME,
-    },
-
-    user: {
-      USERNAME: "",
-      PASSWORD: "",
-      TOKEN: "",
-      UID: 0,
-    },
+export default class YMApi {
+  private user: ApiUser = {
+    password: "",
+    token: "",
+    uid: 0,
+    username: "",
   };
 
-  constructor(config = {}) {
-    this.config = { ...this.config, ...config };
-  }
+  constructor(
+    private httpClient: HttpClientInterface = new HttpClient(),
+    private config: ApiConfig = fallbackConfig
+  ) {}
 
   private getAuthHeader(): { Authorization: string } {
     return {
-      Authorization: `OAuth ${this.config.user.TOKEN}`,
+      Authorization: `OAuth ${this.user.token}`,
     };
   }
 
@@ -60,8 +59,8 @@ export default class YandexMusicApi {
   async init(config: ApiInitConfig): Promise<InitResponse> {
     // Skip auth if access_token and uid are present
     if (config.access_token && config.uid) {
-      this.config.user.TOKEN = config.access_token;
-      this.config.user.UID = config.uid;
+      this.user.token = config.access_token;
+      this.user.uid = config.uid;
       return {
         access_token: config.access_token,
         uid: config.uid,
@@ -73,21 +72,21 @@ export default class YandexMusicApi {
         "username && password || access_token && uid must be set"
       );
     }
-    this.config.user.USERNAME = config.username;
-    this.config.user.PASSWORD = config.password;
+    this.user.username = config.username;
+    this.user.password = config.password;
 
-    const data = (await rest.post(
+    const data = (await this.httpClient.post(
       authRequest().setPath("/1/token").setBodyData({
         grant_type: "password",
-        username: this.config.user.USERNAME,
-        password: this.config.user.PASSWORD,
+        username: this.user.username,
+        password: this.user.password,
         client_id: this.config.oauth.CLIENT_ID,
         client_secret: this.config.oauth.CLIENT_SECRET,
       })
     )) as ObjectResponse;
 
-    this.config.user.TOKEN = data.access_token;
-    this.config.user.UID = data.uid;
+    this.user.token = data.access_token;
+    this.user.uid = data.uid;
 
     return data as InitResponse;
   }
@@ -101,7 +100,7 @@ export default class YandexMusicApi {
       .setPath("/account/status")
       .addHeaders(this.getAuthHeader());
 
-    return rest.get(request) as Promise<GetAccountStatusResponse>;
+    return this.httpClient.get(request) as Promise<GetAccountStatusResponse>;
   }
 
   /**
@@ -113,7 +112,7 @@ export default class YandexMusicApi {
       .setPath("/feed")
       .addHeaders(this.getAuthHeader());
 
-    return rest.get(request) as Promise<GetFeedResponse>;
+    return this.httpClient.get(request) as Promise<GetFeedResponse>;
   }
 
   /**
@@ -125,21 +124,14 @@ export default class YandexMusicApi {
       .setPath("/genres")
       .addHeaders(this.getAuthHeader());
 
-    return rest.get(request) as Promise<GetGenresResponse>;
+    return this.httpClient.get(request) as Promise<GetGenresResponse>;
   }
 
   /**
    * GET: /search
    * Search artists, tracks, albums.
    */
-  search(
-    query: string,
-    options: {
-      type?: SearchType;
-      page?: number;
-      nococrrect?: boolean;
-    } = {}
-  ): Promise<SearchResponse> {
+  search(query: string, options: SearchOptions = {}): Promise<SearchResponse> {
     const type = !options.type ? "all" : options.type;
     const page = String(!options.page ? 0 : options.page);
     const nococrrect = String(
@@ -155,36 +147,78 @@ export default class YandexMusicApi {
         nococrrect,
       });
 
-    return rest.get(request) as Promise<SearchResponse>;
+    return this.httpClient.get(request) as Promise<SearchResponse>;
+  }
+
+  searchArtists(
+    query: string,
+    options: ConcreteSearchOptions = {}
+  ): Promise<SearchArtistsResponse> {
+    return this.search(query, {
+      ...options,
+      type: "artist",
+    }) as Promise<SearchArtistsResponse>;
+  }
+
+  searchTracks(
+    query: string,
+    options: ConcreteSearchOptions = {}
+  ): Promise<SearchTracksResponse> {
+    return this.search(query, {
+      ...options,
+      type: "track",
+    }) as Promise<SearchTracksResponse>;
+  }
+
+  searchAlbums(
+    query: string,
+    options: ConcreteSearchOptions = {}
+  ): Promise<SearchAlbumsResponse> {
+    return this.search(query, {
+      ...options,
+      type: "album",
+    }) as Promise<SearchAlbumsResponse>;
+  }
+
+  searchAll(
+    query: string,
+    options: ConcreteSearchOptions = {}
+  ): Promise<SearchAllResponse> {
+    return this.search(query, {
+      ...options,
+      type: "all",
+    }) as Promise<SearchAllResponse>;
   }
 
   /**
    * GET: /users/[user_id]/playlists/list
    * Get a user's playlists.
    */
-  getUserPlaylists(userId: number | null = null): Promise<Array<Playlist>> {
-    const uid = [null, 0].includes(userId) ? this.config.user.UID : userId;
+  getUserPlaylists(
+    user: number | string | null = null
+  ): Promise<Array<Playlist>> {
+    const uid = [null, 0, ""].includes(user) ? this.user.uid : user;
     const request = apiRequest()
       .setPath(`/users/${uid}/playlists/list`)
       .addHeaders(this.getAuthHeader());
 
-    return rest.get(request) as Promise<Array<Playlist>>;
+    return this.httpClient.get(request) as Promise<Array<Playlist>>;
   }
 
   /**
    * GET: /users/[user_id]/playlists/[playlist_kind]
    * Get a playlist without tracks
    */
-  getUserPlaylist(
+  getPlaylist(
     playlistId: number,
-    userId: number | null = null
+    user: number | string | null = null
   ): Promise<Playlist> {
-    const uid = [null, 0].includes(userId) ? this.config.user.UID : userId;
+    const uid = [null, 0, ""].includes(user) ? this.user.uid : user;
     const request = apiRequest()
       .setPath(`/users/${uid}/playlists/${playlistId}`)
       .addHeaders(this.getAuthHeader());
 
-    return rest.get(request) as Promise<Playlist>;
+    return this.httpClient.get(request) as Promise<Playlist>;
   }
 
   /**
@@ -193,10 +227,10 @@ export default class YandexMusicApi {
    */
   getPlaylists(
     playlists: Array<number>,
-    userId: number | null = null,
+    user: number | string | null = null,
     options: { mixed?: boolean; "rich-tracks"?: boolean } = {}
   ): Promise<Array<Playlist>> {
-    const uid = [null, 0].includes(userId) ? this.config.user.UID : userId;
+    const uid = [null, 0, ""].includes(user) ? this.user.uid : user;
     const kinds = playlists.join();
     const mixed = String(options.mixed == null ? false : options.mixed);
     const richTracks = String(
@@ -212,7 +246,7 @@ export default class YandexMusicApi {
         "rich-tracks": richTracks,
       });
 
-    return rest.get(request) as Promise<Array<Playlist>>;
+    return this.httpClient.get(request) as Promise<Array<Playlist>>;
   }
 
   /**
@@ -225,14 +259,14 @@ export default class YandexMusicApi {
   ): Promise<Playlist> {
     const visibility = !options.visibility ? "private" : options.visibility;
     const request = apiRequest()
-      .setPath("/users/" + this.config.user.UID + "/playlists/create")
+      .setPath(`/users/${this.user.uid}/playlists/create`)
       .addHeaders(this.getAuthHeader())
       .setBodyData({
         title: name,
         visibility,
       });
 
-    return rest.post(request) as Promise<Playlist>;
+    return this.httpClient.post(request) as Promise<Playlist>;
   }
 
   /**
@@ -241,10 +275,10 @@ export default class YandexMusicApi {
    */
   removePlaylist(playlistId: number): Promise<"ok" | string> {
     const request = apiRequest()
-      .setPath(`/users/${this.config.user.UID}/playlists/${playlistId}/delete`)
+      .setPath(`/users/${this.user.uid}/playlists/${playlistId}/delete`)
       .addHeaders(this.getAuthHeader());
 
-    return rest.post(request) as Promise<"ok" | string>;
+    return this.httpClient.post(request) as Promise<"ok" | string>;
   }
 
   /**
@@ -253,13 +287,13 @@ export default class YandexMusicApi {
    */
   renamePlaylist(playlistId: number, name: string): Promise<Playlist> {
     const request = apiRequest()
-      .setPath(`/users/${this.config.user.UID}/playlists/${playlistId}/name`)
+      .setPath(`/users/${this.user.uid}/playlists/${playlistId}/name`)
       .addHeaders(this.getAuthHeader())
       .setBodyData({
         value: name,
       });
 
-    return rest.post(request) as Promise<Playlist>;
+    return this.httpClient.post(request) as Promise<Playlist>;
   }
 
   /**
@@ -275,7 +309,7 @@ export default class YandexMusicApi {
     const at = !options.at ? 0 : options.at;
     const request = apiRequest()
       .setPath(
-        `/users/${this.config.user.UID}/playlists/${playlistId}/change-relative`
+        `/users/${this.user.uid}/playlists/${playlistId}/change-relative`
       )
       .addHeaders(this.getAuthHeader())
       .setBodyData({
@@ -289,7 +323,7 @@ export default class YandexMusicApi {
         revision: String(revision),
       });
 
-    return rest.post(request) as Promise<Playlist>;
+    return this.httpClient.post(request) as Promise<Playlist>;
   }
 
   /**
@@ -306,7 +340,7 @@ export default class YandexMusicApi {
     const to = !options.to ? tracks.length : options.to;
     const request = apiRequest()
       .setPath(
-        `/users/${this.config.user.UID}/playlists/${playlistId}/change-relative`
+        `/users/${this.user.uid}/playlists/${playlistId}/change-relative`
       )
       .addHeaders(this.getAuthHeader())
       .setBodyData({
@@ -321,43 +355,60 @@ export default class YandexMusicApi {
         revision: String(revision),
       });
 
-    return rest.post(request) as Promise<Playlist>;
+    return this.httpClient.post(request) as Promise<Playlist>;
   }
 
   /**
    * GET: /tracks/[track_id]
    * Get an array of playlists with tracks
    */
-  getTrack(trackId: string): Promise<GetTrackResponse> {
+  getTrack(trackId: TrackId): Promise<GetTrackResponse> {
     const request = apiRequest()
       .setPath(`/tracks/${trackId}`)
       .addHeaders(this.getAuthHeader());
 
-    return rest.get(request) as Promise<GetTrackResponse>;
+    return this.httpClient.get(request) as Promise<GetTrackResponse>;
+  }
+
+  /**
+   * GET: /tracks/[track_id]
+   * Get single track
+   */
+  async getSingleTrack(trackId: TrackId): Promise<Track> {
+    const tracks = await this.getTrack(trackId);
+    if (tracks.length !== 1) {
+      throw new Error(`More than one result received`);
+    }
+
+    return tracks.pop() as Track;
   }
 
   /**
    * GET: /tracks/[track_id]/supplement
    * Get an array of playlists with tracks
    */
-  getTrackSupplement(trackId: string): Promise<GetTrackSupplementResponse> {
+  getTrackSupplement(trackId: TrackId): Promise<GetTrackSupplementResponse> {
     const request = apiRequest()
       .setPath(`/tracks/${trackId}/supplement`)
       .addHeaders(this.getAuthHeader());
 
-    return rest.get(request) as Promise<GetTrackSupplementResponse>;
+    return this.httpClient.get(request) as Promise<GetTrackSupplementResponse>;
   }
 
   /**
    * GET: /tracks/[track_id]/download-info
    * Get track download information
    */
-  getTrackDownloadInfo(trackId: string): Promise<GetTrackDownloadInfoResponse> {
+  getTrackDownloadInfo(
+    trackId: TrackId
+  ): Promise<GetTrackDownloadInfoResponse> {
     const request = apiRequest()
       .setPath(`/tracks/${trackId}/download-info`)
       .addHeaders(this.getAuthHeader());
 
-    return rest.get(request) as Promise<GetTrackDownloadInfoResponse>;
+    return this.httpClient.get(
+      request
+    ) as Promise<GetTrackDownloadInfoResponse>;
   }
 
   /**
@@ -365,7 +416,7 @@ export default class YandexMusicApi {
    */
   async getTrackDirectLink(trackDownloadUrl: string): Promise<string> {
     const request = directLinkRequest(trackDownloadUrl);
-    const xml = await rest.get(request);
+    const xml = await this.httpClient.get(request);
     const parsedXml = await parseStringPromise(xml);
     const host = parsedXml["download-info"].host[0];
     const path = parsedXml["download-info"].path[0];
@@ -377,5 +428,59 @@ export default class YandexMusicApi {
       .digest("hex");
 
     return `https://${host}/get-mp3/${sign}/${ts}${path}`;
+  }
+
+  /**
+   * GET: /albums/[album_id]
+   * Get an album
+   */
+  getAlbum(albumId: AlbumId, withTracks: boolean = false): Promise<Album> {
+    const request = apiRequest()
+      .setPath(`/albums/${albumId}${withTracks ? "/with-tracks" : ""}`)
+      .addHeaders(this.getAuthHeader());
+
+    return this.httpClient.get(request) as Promise<Album>;
+  }
+
+  getAlbumWithTracks(albumId: AlbumId): Promise<AlbumWithTracks> {
+    return this.getAlbum(albumId, true) as Promise<AlbumWithTracks>;
+  }
+
+  /**
+   * GET: /albums
+   * Get an albums
+   */
+  getAlbums(albumIds: Array<AlbumId>): Promise<Array<Album>> {
+    const request = apiRequest()
+      .setPath(`/albums`)
+      .setBodyData({ albumIds: albumIds.join() })
+      .addHeaders(this.getAuthHeader());
+
+    return this.httpClient.post(request) as Promise<Array<Album>>;
+  }
+
+  /**
+   * GET: /artists/[artist_id]
+   * Get an artist
+   */
+  getArtist(artistId: ArtistId): Promise<FilledArtist> {
+    const request = apiRequest()
+      .setPath(`/artists/${artistId}`)
+      .addHeaders(this.getAuthHeader());
+
+    return this.httpClient.get(request) as Promise<FilledArtist>;
+  }
+
+  /**
+   * GET: /artists
+   * Get an artists
+   */
+  getArtists(artistIds: Array<ArtistId>): Promise<Array<Artist>> {
+    const request = apiRequest()
+      .setPath(`/artists`)
+      .setBodyData({ artistIds: artistIds.join() })
+      .addHeaders(this.getAuthHeader());
+
+    return this.httpClient.post(request) as Promise<Array<Artist>>;
   }
 }

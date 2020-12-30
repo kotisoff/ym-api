@@ -1,9 +1,16 @@
 import axios, { AxiosRequestConfig } from "axios";
-import Request from "./request";
-import { Method, Response } from "./types";
+import {
+  HttpClientInterface,
+  Method,
+  Response,
+  RequestInterface,
+} from "./types";
 
-export default class Rest {
-  async _sendRequestAxios(method: Method, request: Request): Promise<Response> {
+export default class HttpClient implements HttpClientInterface {
+  async _sendRequestAxios(
+    method: Method,
+    request: RequestInterface
+  ): Promise<Response> {
     const axiosRequest: AxiosRequestConfig = {
       method,
       url: request.getURL(),
@@ -34,11 +41,11 @@ export default class Rest {
     }
   }
 
-  get(request: Request): Promise<Response> {
+  get(request: RequestInterface): Promise<Response> {
     return this._sendRequestAxios("get", request);
   }
 
-  post(request: Request): Promise<Response> {
+  post(request: RequestInterface): Promise<Response> {
     return this._sendRequestAxios("post", request);
   }
 }

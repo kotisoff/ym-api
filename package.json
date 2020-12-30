@@ -1,10 +1,10 @@
 {
   "name": "ym-api",
-  "version": "0.2.1",
+  "version": "1.0.0",
   "homepage": "https://github.com/kontsevoye/ym-api",
   "description": "A Node.js wrapper for the Yandex.Music API (Unofficial) http://music.yandex.ru",
-  "main": "dist/ym-api.js",
-  "types": "dist/ym-api.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "author": "Evgeny Kontsevoy",
   "contributors": [
     "Anton Petrov <petrov.aap@gmail.com> (https://itsmepetrov.com)"

@@ -1,6 +1,6 @@
-import YandexMusicApi from "../src/ym-api";
+import { YMApi } from "../src";
 import config from "./config";
-const api = new YandexMusicApi();
+const api = new YMApi();
 
 (async () => {
   try {
@@ -8,7 +8,7 @@ const api = new YandexMusicApi();
     const searchResult = await api.search("gorillaz", { type: "artist" });
     const gorillaz = searchResult.artists?.results[0];
     const gorillazMostPopularTrack = gorillaz?.popularTracks[0];
-    const gorillazMostPopularTrackId = `${gorillazMostPopularTrack?.id}:${gorillaz?.id}`;
+    const gorillazMostPopularTrackId = gorillazMostPopularTrack?.id as number;
     console.log({ searchResult, gorillaz, gorillazMostPopularTrack });
 
     const getTrackResult = await api.getTrack(gorillazMostPopularTrackId);

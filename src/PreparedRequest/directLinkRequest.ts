@@ -1,7 +1,7 @@
-import Request from "./request";
+import Request from "../Request";
 import { URL } from "url";
 
-export function get(url: string) {
+export default function directLinkRequest(url: string) {
   const parsedUrl = new URL(url);
   return new Request({
     scheme: parsedUrl.protocol.replace(":", ""),
