@@ -32,6 +32,7 @@ import {
   FilledArtist,
   Artist,
   ArtistId,
+  ArtistTracksResponse,
 } from "./types";
 
 export default class YMApi {
@@ -134,6 +135,7 @@ export default class YMApi {
   search(query: string, options: SearchOptions = {}): Promise<SearchResponse> {
     const type = !options.type ? "all" : options.type;
     const page = String(!options.page ? 0 : options.page);
+    const pageSize = String(!options.page ? 0 : options.pageSize);
     const nococrrect = String(
       options.nococrrect == null ? false : options.nococrrect
     );
@@ -144,6 +146,7 @@ export default class YMApi {
         type,
         text: query,
         page,
+        pageSize,
         nococrrect,
       });
 
@@ -482,5 +485,26 @@ export default class YMApi {
       .addHeaders(this.getAuthHeader());
 
     return this.httpClient.post(request) as Promise<Array<Artist>>;
+  }
+
+  /**
+   * GET: /artists/[artist_id]/tracks
+   * Get tracks by artist id
+   */
+  getArtistTracks(
+    artistId: ArtistId,
+    options: SearchOptions = {}
+  ): Promise<ArtistTracksResponse> {
+    const page = String(!options.page ? 0 : options.page);
+    const pageSize = String(!options.pageSize ? 0 : options.pageSize);
+    const request = apiRequest()
+      .setPath(`/artists/${artistId}/tracks`)
+      .addHeaders(this.getAuthHeader())
+      .setQuery({
+        page,
+        pageSize,
+      });
+
+    return this.httpClient.get(request) as Promise<ArtistTracksResponse>;
   }
 }
