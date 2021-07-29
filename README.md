@@ -59,6 +59,7 @@ This library provides following methods:
 #### Tracks
 
 - getTrack
+- getArtistTracks
 - getSingleTrack
 - getTrackSupplement
 - getTrackDownloadInfo

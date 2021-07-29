@@ -366,6 +366,11 @@ export type SearchResponse = {
   };
 };
 
+export type ArtistTracksResponse = {
+  pager: Pager;
+  tracks: Array<Track>;
+};
+
 export type SearchAllResponse = Required<SearchResponse>;
 export type SearchArtistsResponse = Required<
   Omit<Omit<SearchResponse, "albums">, "tracks">
@@ -484,6 +489,13 @@ export type SearchOptions = {
   type?: SearchType;
   page?: number;
   nococrrect?: boolean;
+  pageSize?: number;
 };
 
 export type ConcreteSearchOptions = Omit<SearchOptions, "type">;
+
+export type Pager = {
+  page: number;
+  perPage: number;
+  total: number;
+};
