@@ -33,6 +33,7 @@ import {
   Artist,
   ArtistId,
   ArtistTracksResponse,
+  LikedTracks,
 } from "./types";
 
 export default class YMApi {
@@ -510,5 +511,14 @@ export default class YMApi {
     }
 
     return this.httpClient.get(request) as Promise<ArtistTracksResponse>;
+  }
+
+  getLikedTracks(user: number | string | null = null) {
+    const uid = [null, 0, ""].includes(user) ? this.user.uid : user;
+    const request = apiRequest()
+      .setPath(`/users/${uid}/likes/tracks`)
+      .addHeaders(this.getAuthHeader())
+
+    return this.httpClient.get(request) as Promise<LikedTracks>;
   }
 }
