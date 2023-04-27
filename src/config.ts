@@ -5,7 +5,7 @@ export default {
     scheme: "https",
   },
   authApi: {
-    host: "oauth.mobile.yandex.net",
+    host: "oauth.yandex.ru",
     port: 443,
     scheme: "https",
   },
