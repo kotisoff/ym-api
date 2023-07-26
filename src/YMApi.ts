@@ -2,7 +2,7 @@ import { authRequest, apiRequest, directLinkRequest } from "./PreparedRequest";
 import fallbackConfig from "./config";
 import HttpClient from "./HttpClient";
 import { parseStringPromise } from "xml2js";
-import crypto from "crypto";
+import * as crypto from "crypto";
 import {
   ApiConfig,
   ApiInitConfig,
@@ -76,9 +76,10 @@ export default class YMApi {
     }
     this.user.username = config.username;
     this.user.password = config.password;
+    console.log(authRequest())
 
-    const data = (await this.httpClient.post(
-      authRequest().setPath("/1/token").setBodyData({
+    const data = (await this.httpClient.get(
+      authRequest().setPath("/authorize").setQuery({
         grant_type: "password",
         username: this.user.username,
         password: this.user.password,
@@ -517,7 +518,7 @@ export default class YMApi {
     const uid = [null, 0, ""].includes(user) ? this.user.uid : user;
     const request = apiRequest()
       .setPath(`/users/${uid}/likes/tracks`)
-      .addHeaders(this.getAuthHeader())
+      .addHeaders(this.getAuthHeader());
 
     return this.httpClient.get(request) as Promise<LikedTracks>;
   }
