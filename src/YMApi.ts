@@ -58,6 +58,7 @@ export default class YMApi {
 
   /**
    * Authentication
+   * @returns access_token & uid
    */
   async init(config: ApiInitConfig): Promise<InitResponse> {
     // Skip auth if access_token and uid are present
@@ -97,7 +98,7 @@ export default class YMApi {
 
   /**
    * GET: /account/status
-   * Get account status for curren user
+   * @returns account status for current user
    */
   getAccountStatus(): Promise<GetAccountStatusResponse> {
     const request = apiRequest()
@@ -109,7 +110,7 @@ export default class YMApi {
 
   /**
    * GET: /feed
-   * Get the user's feed
+   * @returns the user's feed
    */
   getFeed(): Promise<GetFeedResponse> {
     const request = apiRequest()
@@ -121,7 +122,7 @@ export default class YMApi {
 
   /**
    * GET: /genres
-   * Get a list of music genres
+   * @returns a list of music genres
    */
   getGenres(): Promise<GetGenresResponse> {
     const request = apiRequest()
@@ -134,6 +135,7 @@ export default class YMApi {
   /**
    * GET: /search
    * Search artists, tracks, albums.
+   * @returns Every {type} with query in it's title.
    */
   search(query: string, options: SearchOptions = {}): Promise<SearchResponse> {
     const type = !options.type ? "all" : options.type;
@@ -158,6 +160,11 @@ export default class YMApi {
     return this.httpClient.get(request) as Promise<SearchResponse>;
   }
 
+  /**
+   * @param query Query
+   * @param options Options
+   * @returns Every artist with query in it's title.
+   */
   searchArtists(
     query: string,
     options: ConcreteSearchOptions = {}
@@ -168,6 +175,11 @@ export default class YMApi {
     }) as Promise<SearchArtistsResponse>;
   }
 
+  /**
+   * @param query Query
+   * @param options Options
+   * @returns Every track with query in it's title.
+   */
   searchTracks(
     query: string,
     options: ConcreteSearchOptions = {}
@@ -178,6 +190,11 @@ export default class YMApi {
     }) as Promise<SearchTracksResponse>;
   }
 
+  /**
+   * @param query Query
+   * @param options Options
+   * @returns Every album with query in it's title.
+   */
   searchAlbums(
     query: string,
     options: ConcreteSearchOptions = {}
@@ -188,6 +205,11 @@ export default class YMApi {
     }) as Promise<SearchAlbumsResponse>;
   }
 
+  /**
+   * @param query Query
+   * @param options Options
+   * @returns Everything with query in it's title.
+   */
   searchAll(
     query: string,
     options: ConcreteSearchOptions = {}
@@ -200,7 +222,7 @@ export default class YMApi {
 
   /**
    * GET: /users/[user_id]/playlists/list
-   * Get a user's playlists.
+   * @returns a user's playlists.
    */
   getUserPlaylists(
     user: number | string | null = null
@@ -215,7 +237,7 @@ export default class YMApi {
 
   /**
    * GET: /users/[user_id]/playlists/[playlist_kind]
-   * Get a playlist without tracks
+   * @returns a playlist without tracks
    */
   getPlaylist(
     playlistId: number,
@@ -231,7 +253,7 @@ export default class YMApi {
 
   /**
    * GET: /users/[user_id]/playlists
-   * Get an array of playlists with tracks
+   * @returns an array of playlists with tracks
    */
   getPlaylists(
     playlists: Array<number>,
@@ -260,6 +282,7 @@ export default class YMApi {
   /**
    * POST: /users/[user_id]/playlists/create
    * Create a new playlist
+   * @returns Playlist
    */
   createPlaylist(
     name: string,
@@ -280,6 +303,7 @@ export default class YMApi {
   /**
    * POST: /users/[user_id]/playlists/[playlist_kind]/delete
    * Remove a playlist
+   * @returns "ok" | string
    */
   removePlaylist(playlistId: number): Promise<"ok" | string> {
     const request = apiRequest()
@@ -292,6 +316,7 @@ export default class YMApi {
   /**
    * POST: /users/[user_id]/playlists/[playlist_kind]/name
    * Change playlist name
+   * @returns Playlist
    */
   renamePlaylist(playlistId: number, name: string): Promise<Playlist> {
     const request = apiRequest()
@@ -307,6 +332,7 @@ export default class YMApi {
   /**
    * POST: /users/[user_id]/playlists/[playlist_kind]/change-relative
    * Add tracks to the playlist
+   * @returns Playlist
    */
   addTracksToPlaylist(
     playlistId: number,
@@ -337,6 +363,7 @@ export default class YMApi {
   /**
    * POST: /users/[user_id]/playlists/[playlist_kind]/change-relative
    * Remove tracks from the playlist
+   * @returns Playlist
    */
   removeTracksFromPlaylist(
     playlistId: number,
@@ -368,7 +395,7 @@ export default class YMApi {
 
   /**
    * GET: /tracks/[track_id]
-   * Get an array of playlists with tracks
+   * @returns an array of playlists with tracks
    */
   getTrack(trackId: TrackId): Promise<GetTrackResponse> {
     const request = apiRequest()
@@ -380,7 +407,7 @@ export default class YMApi {
 
   /**
    * GET: /tracks/[track_id]
-   * Get single track
+   * @returns single track
    */
   async getSingleTrack(trackId: TrackId): Promise<Track> {
     const tracks = await this.getTrack(trackId);
@@ -393,7 +420,7 @@ export default class YMApi {
 
   /**
    * GET: /tracks/[track_id]/supplement
-   * Get an array of playlists with tracks
+   * @returns an array of playlists with tracks
    */
   getTrackSupplement(trackId: TrackId): Promise<GetTrackSupplementResponse> {
     const request = apiRequest()
@@ -405,7 +432,7 @@ export default class YMApi {
 
   /**
    * GET: /tracks/[track_id]/download-info
-   * Get track download information
+   * @returns track download information
    */
   getTrackDownloadInfo(
     trackId: TrackId
@@ -420,7 +447,7 @@ export default class YMApi {
   }
 
   /**
-   * Get track direct link
+   * @returns track direct link
    */
   async getTrackDirectLink(trackDownloadUrl: string): Promise<string> {
     const request = directLinkRequest(trackDownloadUrl);
@@ -440,7 +467,7 @@ export default class YMApi {
 
   /**
    * GET: /albums/[album_id]
-   * Get an album
+   * @returns an album
    */
   getAlbum(albumId: AlbumId, withTracks: boolean = false): Promise<Album> {
     const request = apiRequest()
@@ -456,7 +483,7 @@ export default class YMApi {
 
   /**
    * GET: /albums
-   * Get an albums
+   * @returns an albums
    */
   getAlbums(albumIds: Array<AlbumId>): Promise<Array<Album>> {
     const request = apiRequest()
@@ -469,7 +496,7 @@ export default class YMApi {
 
   /**
    * GET: /artists/[artist_id]
-   * Get an artist
+   * @returns an artist
    */
   getArtist(artistId: ArtistId): Promise<FilledArtist> {
     const request = apiRequest()
@@ -481,7 +508,7 @@ export default class YMApi {
 
   /**
    * GET: /artists
-   * Get an artists
+   * @returns an artists
    */
   getArtists(artistIds: Array<ArtistId>): Promise<Array<Artist>> {
     const request = apiRequest()
@@ -494,7 +521,7 @@ export default class YMApi {
 
   /**
    * GET: /artists/[artist_id]/tracks
-   * Get tracks by artist id
+   * @returns Tracks by artist id
    */
   getArtistTracks(
     artistId: ArtistId,
@@ -515,8 +542,13 @@ export default class YMApi {
     return this.httpClient.get(request) as Promise<ArtistTracksResponse>;
   }
 
-  getLikedTracks(user: number | string | null = null) {
-    const uid = [null, 0, ""].includes(user) ? this.user.uid : user;
+  /**
+   * @param userId User id. Nullable.
+   * @returns LikedTracks
+   */
+
+  getLikedTracks(userId: number | string | null = null) {
+    const uid = [null, 0, ""].includes(userId) ? this.user.uid : userId;
     const request = apiRequest()
       .setPath(`/users/${uid}/likes/tracks`)
       .addHeaders(this.getAuthHeader());
@@ -527,14 +559,53 @@ export default class YMApi {
   /**
    * @param language Language of station list
    * GET: /rotor/stations/list
-   * Get list of stations.
+   * @returns list of stations.
    */
-
-  getAllStationList(language: Language): Promise<any> {
+  getAllStationsList(language: Language): Promise<any> {
     const request = apiRequest()
       .setPath(`/rotor/stations/list`)
       .addHeaders(this.getAuthHeader())
       .setQuery({ language });
+
+    return this.httpClient.get(request) as Promise<any>;
+  }
+
+  /**
+   * GET: /rotor/stations/dashboard
+   * REQUIRES YOU TO BE LOGGED IN!
+   * @returns list of recomended stations.
+   */
+  getRecomendedStationsList(): Promise<any> {
+    const request = apiRequest()
+      .setPath("/rotor/stations/dashboard")
+      .addHeaders(this.getAuthHeader())
+
+    return this.httpClient.get(request) as Promise<any>;
+  }
+
+  /**
+   * @param stationId Example: user:onyourwave
+   * GET: /rotor/station/{stationId}/tracks
+   * REQUIRES YOU TO BE LOGGED IN!
+   * @returns tracks from station.
+   */
+  getStationTracks(stationId:string): Promise<any> {
+    const request = apiRequest()
+      .setPath(`/rotor/station/${stationId}/tracks`)
+      .addHeaders(this.getAuthHeader())
+
+    return this.httpClient.get(request) as Promise<any>;
+  }
+
+  /**
+   * @param stationId Example: user:onyourwave
+   * GET: /rotor/station/{stationId}/info
+   * @returns info of the station.
+   */
+  getStationInfo(stationId:string): Promise<any> {
+    const request = apiRequest()
+      .setPath(`/rotor/station/${stationId}/info`)
+      .addHeaders(this.getAuthHeader())
 
     return this.httpClient.get(request) as Promise<any>;
   }
