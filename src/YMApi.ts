@@ -80,7 +80,7 @@ export default class YMApi {
     console.log(authRequest());
 
     const data = (await this.httpClient.get(
-      authRequest().setPath("/authorize").setQuery({
+      authRequest().setPath("/token").setQuery({
         grant_type: "password",
         username: this.user.username,
         password: this.user.password,
@@ -525,7 +525,6 @@ export default class YMApi {
   }
 
   /**
-   *
    * @param language Language of station list
    * GET: /rotor/stations/list
    * Get list of stations.
