@@ -31,7 +31,7 @@ export default class HttpClient implements HttpClientInterface {
       } else {
         return data;
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error({
         status: e.response.status,
         headers: e.response.headers,

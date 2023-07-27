@@ -11,6 +11,7 @@ import {
   SearchResponse,
   Playlist,
   GetTrackResponse,
+  Language,
   GetTrackSupplementResponse,
   GetTrackDownloadInfoResponse,
   ObjectResponse,
@@ -76,7 +77,7 @@ export default class YMApi {
     }
     this.user.username = config.username;
     this.user.password = config.password;
-    console.log(authRequest())
+    console.log(authRequest());
 
     const data = (await this.httpClient.get(
       authRequest().setPath("/authorize").setQuery({
@@ -521,5 +522,21 @@ export default class YMApi {
       .addHeaders(this.getAuthHeader());
 
     return this.httpClient.get(request) as Promise<LikedTracks>;
+  }
+
+  /**
+   *
+   * @param language Language of station list
+   * GET: /rotor/stations/list
+   * Get list of stations.
+   */
+
+  getAllStationList(language: Language): Promise<any> {
+    const request = apiRequest()
+      .setPath(`/rotor/stations/list`)
+      .addHeaders(this.getAuthHeader())
+      .setQuery({ language });
+
+    return this.httpClient.get(request) as Promise<any>;
   }
 }

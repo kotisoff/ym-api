@@ -211,7 +211,11 @@ type GenreId =
   | "poemsforchildren"
   | "podcasts"
   | "classicalmusic"
+  | "fiction"
+  | "nonfictionliterature"
+  | "booksnotinrussian"
   | "audiobooks"
+  | "folkgenre"
   | "other"
   | string;
 type RadioIcon = {
@@ -370,7 +374,7 @@ export type SearchResponse = {
     results: Array<Track>;
   };
   best?: {
-    type: 'track' | 'artist' | 'album' | 'playlist' | 'video';
+    type: "track" | "artist" | "album" | "playlist" | "video";
     results: Array<Track | Artist | Album | Playlist | Video>;
     misspellCorrected: boolean;
     nocorrect: boolean;
@@ -395,7 +399,7 @@ export type SearchAlbumsResponse = Required<
 
 export type GetTrackResponse = Array<Track>;
 
-type Language = "en" | string;
+export type Language = "en" | "ru" | string;
 type Lirics = {
   id: number;
   lyrics: string;
