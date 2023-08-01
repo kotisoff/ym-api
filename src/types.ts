@@ -528,3 +528,67 @@ export type LikedTracks = {
     tracks: TrackMeta[];
   };
 };
+
+export type ChartTracks = {
+  id: string;
+  type: string;
+  typeForFrom: string;
+  title: string;
+  chartDescription: string;
+  menu: {
+    items: Array<{ title: string; url: string; selected?: boolean }>;
+  };
+  chart: {
+    owner: PlaylistOwner;
+    playlistUuid: string;
+    available: boolean;
+    uid: number;
+    kind: number;
+    title: string;
+    description: string;
+    descriptionFormatted: string;
+    revision: number;
+    snapshot: number;
+    trackCount: number;
+    visibility: Visibility;
+    collective: boolean;
+    created: string;
+    modified: string;
+    isBanner: boolean;
+    isPremiere: boolean;
+    durationMs: number;
+    cover: PlaylistCover;
+    ogImage: string;
+    tracks: Array<PlaylistTrack>;
+    tags: Array<any>;
+    likesCount: number;
+    similarPlaylists: Array<Playlist>;
+    backgroundVideoUrl: string;
+    backgroundImageUrl: string;
+  };
+};
+
+export type ChartType = "russia" | "world";
+
+export type NewReleases = {
+  id: string;
+  type: string;
+  typeForFrom: string;
+  title: string;
+  newReleases: Array<number>;
+};
+
+export type NewPlaylists = {
+  id: string;
+  type: string;
+  typeForFrom: string;
+  title: string;
+  newPlaylists: Array<{ uid: number; kind: number }>;
+};
+
+export type Podcasts = {
+  type: string;
+  typeForFrom: string;
+  title: string;
+  podcasts: Array<number>;
+};

@@ -35,6 +35,11 @@ import {
   ArtistId,
   ArtistTracksResponse,
   LikedTracks,
+  ChartType,
+  ChartTracks,
+  NewReleases,
+  NewPlaylists,
+  Podcasts,
 } from "./types";
 
 export default class YMApi {
@@ -118,6 +123,56 @@ export default class YMApi {
       .addHeaders(this.getAuthHeader());
 
     return this.httpClient.get(request) as Promise<GetFeedResponse>;
+  }
+
+  /**
+   *
+   * @param ChartType Type of chart.
+   * GET: /landing3/chart/{ChartType}
+   * @returns chart of songs.
+   */
+  getChart(ChartType: ChartType): Promise<ChartTracks> {
+    const request = apiRequest()
+      .setPath(`/landing3/chart/${ChartType}`)
+      .addHeaders(this.getAuthHeader());
+
+    return this.httpClient.get(request) as Promise<ChartTracks>;
+  }
+
+  /**
+   * GET: /landing3/new-playlists
+   * @returns new playlists (for you).
+   */
+  getNewPlaylists(): Promise<NewPlaylists> {
+    const request = apiRequest()
+      .setPath("/landing3/new-playlists")
+      .addHeaders(this.getAuthHeader());
+
+    return this.httpClient.get(request) as Promise<any>;
+  }
+
+  /**
+   * GET: /landing3/new-releases
+   * @returns new releases.
+   */
+  getNewReleases(): Promise<NewReleases> {
+    const request = apiRequest()
+      .setPath("/landing3/new-releases")
+      .addHeaders(this.getAuthHeader());
+
+    return this.httpClient.get(request) as Promise<NewReleases>;
+  }
+
+  /**
+   * GET: /landing3/podcasts
+   * @returns all podcasts.
+   */
+  getPodcasts(): Promise<Podcasts> {
+    const request = apiRequest()
+      .setPath("/landing3/podcasts")
+      .addHeaders(this.getAuthHeader());
+
+    return this.httpClient.get(request) as Promise<any>;
   }
 
   /**
@@ -578,7 +633,7 @@ export default class YMApi {
   getRecomendedStationsList(): Promise<any> {
     const request = apiRequest()
       .setPath("/rotor/stations/dashboard")
-      .addHeaders(this.getAuthHeader())
+      .addHeaders(this.getAuthHeader());
 
     return this.httpClient.get(request) as Promise<any>;
   }
@@ -589,10 +644,10 @@ export default class YMApi {
    * REQUIRES YOU TO BE LOGGED IN!
    * @returns tracks from station.
    */
-  getStationTracks(stationId:string): Promise<any> {
+  getStationTracks(stationId: string): Promise<any> {
     const request = apiRequest()
       .setPath(`/rotor/station/${stationId}/tracks`)
-      .addHeaders(this.getAuthHeader())
+      .addHeaders(this.getAuthHeader());
 
     return this.httpClient.get(request) as Promise<any>;
   }
@@ -602,10 +657,10 @@ export default class YMApi {
    * GET: /rotor/station/{stationId}/info
    * @returns info of the station.
    */
-  getStationInfo(stationId:string): Promise<any> {
+  getStationInfo(stationId: string): Promise<any> {
     const request = apiRequest()
       .setPath(`/rotor/station/${stationId}/info`)
-      .addHeaders(this.getAuthHeader())
+      .addHeaders(this.getAuthHeader());
 
     return this.httpClient.get(request) as Promise<any>;
   }
