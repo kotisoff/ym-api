@@ -543,11 +543,12 @@ type TrackMeta = {
   timestamp: string;
 };
 
-export type LikedTracks = {
+export type DisOrLikedTracks = {
   library: {
     revision: number;
     uid: number;
     tracks: TrackMeta[];
+    playlistUuid?: string;
   };
 };
 

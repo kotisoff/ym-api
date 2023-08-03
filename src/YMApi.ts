@@ -34,7 +34,7 @@ import {
   Artist,
   ArtistId,
   ArtistTracksResponse,
-  LikedTracks,
+  DisOrLikedTracks,
   ChartType,
   ChartTracksResponse,
   NewReleasesResponse,
@@ -603,13 +603,22 @@ export default class YMApi {
    * @returns LikedTracks
    */
 
-  getLikedTracks(userId: number | string | null = null) {
+  getLikedTracks(userId: number | string | null = null): Promise<DisOrLikedTracks>  {
     const uid = [null, 0, ""].includes(userId) ? this.user.uid : userId;
     const request = apiRequest()
       .setPath(`/users/${uid}/likes/tracks`)
       .addHeaders(this.getAuthHeader());
 
-    return this.httpClient.get(request) as Promise<LikedTracks>;
+    return this.httpClient.get(request) as Promise<DisOrLikedTracks>;
+  }
+
+  getDislikedTracks(userId: number | string | null = null): Promise<DisOrLikedTracks>  {
+    const uid = [null, 0, ""].includes(userId) ? this.user.uid : userId;
+    const request = apiRequest()
+      .setPath(`/users/${uid}/dislikes/tracks`)
+      .addHeaders(this.getAuthHeader());
+
+    return this.httpClient.get(request) as Promise<DisOrLikedTracks>;
   }
 
   /**
