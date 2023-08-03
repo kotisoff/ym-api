@@ -281,23 +281,39 @@ type Label = { id: number; name: string } | string;
 export type AlbumVolume = Array<Track>;
 export type Album = {
   id: number;
-  storageDir: string;
+  title: string;
+  type: AlbumType;
+  metaType: string;
+  version: string;
+  year?: number;
+  releaseDate: string;
   coverUri: string;
+  ogImage: string;
+  genre: GenreId;
+  metaTagId?: string;
   trackCount: number;
+  recent?: boolean;
+  storageDir?: string;
+  veryImportant: boolean;
+  artists: Array<Artist>;
+  labels?: Array<Label>;
   available: boolean;
   availableForPremiumUsers: boolean;
-  title: string;
-  genre: GenreId;
-  type: AlbumType;
-  trackPosition: TrackPosition;
-  artists: Array<Artist>;
-  availableRegions: Array<Region>;
-  labels: Array<Label>;
+  disclaimers: Array<any>;
+  availableForOptions: Array<any>;
+  availableForMobile: boolean;
+  availablePartially: boolean;
+  bests: Array<number>;
+  duplicates: Array<Album>;
+  customWave?: { title: string; animationUrl: string; header: string };
+  sortOrder?: string;
   volumes?: Array<AlbumVolume>;
-  year?: number;
-  originalReleaseYear: number;
+  trackPosition: TrackPosition;
+  availableRegions?: Array<Region>;
+  originalReleaseYear?: number;
   likesCount?: number;
   regions?: Array<Region>;
+  pager: Pager;
 };
 export type AlbumWithTracks = Required<Album>;
 
@@ -305,24 +321,30 @@ type TrackMajor = { id: number; name: string };
 type TrackNormalization = { gain: number; peak: number };
 export type Track = {
   id: number;
+  realId: string;
+  title: string;
+  version: string;
+  trackSource: string;
+  major?: TrackMajor;
   available: boolean;
-  availableAsRbt: boolean;
   availableForPremiumUsers: boolean;
   availableFullWithoutPermission?: boolean;
+  disclaimers: Array<any>;
+  availableForOptions: Array<string>;
+  durationMs: number;
+  storageDir?: string;
+  fileSize?: number;
+  r128: { i: number; tp: number };
+  fade: { inStart: number; inStop: number; outStart: number; outStop: number };
+  previewDurationMs?: number;
+  artists: Array<Artist>;
+  albums: Array<Album>;
   lyricsAvailable: boolean;
   rememberPosition: boolean;
   coverUri: string;
-  durationMs: number;
   explicit: boolean;
-  title: string;
-  albums: Array<Album>;
-  artists: Array<Artist>;
   regions: Array<Region>;
-  major?: TrackMajor;
-  storageDir?: string;
-  fileSize?: number;
   normalization?: TrackNormalization;
-  previewDurationMs?: number;
   type?: string;
   ogImage?: string;
 };
@@ -330,14 +352,14 @@ export type Track = {
 export type Artist = {
   id: number;
   name: string;
-  composer: boolean;
   various: boolean;
-  ticketsAvailable: boolean;
+  composer: boolean;
+  ticketsAvailable?: boolean;
   cover: ArtistCover;
-  counts: ArtistCounts;
+  counts?: ArtistCounts;
   genres: Array<Genre>;
-  popularTracks: Array<Track>;
-  regions: Array<Region>;
+  popularTracks?: Array<Track>;
+  regions?: Array<Region>;
   albums?: Array<Album>;
   alsoAlbums?: Array<Album>;
   similarArtists?: Array<Artist>;
@@ -529,7 +551,23 @@ export type LikedTracks = {
   };
 };
 
-export type ChartTracks = {
+type StationTrack = {
+  type: string;
+  track: Track;
+  liked: boolean;
+  trackParameters: {
+    bpm: number;
+    hue: number;
+    energy: number;
+  };
+};
+
+export type StationTracksResponse = {
+  id: { type: string; tag: string };
+  sequence: Array<StationTrack>;
+};
+
+export type ChartTracksResponse = {
   id: string;
   type: string;
   typeForFrom: string;
@@ -570,7 +608,7 @@ export type ChartTracks = {
 
 export type ChartType = "russia" | "world";
 
-export type NewReleases = {
+export type NewReleasesResponse = {
   id: string;
   type: string;
   typeForFrom: string;
@@ -578,7 +616,7 @@ export type NewReleases = {
   newReleases: Array<number>;
 };
 
-export type NewPlaylists = {
+export type NewPlaylistsResponse = {
   id: string;
   type: string;
   typeForFrom: string;
@@ -586,7 +624,7 @@ export type NewPlaylists = {
   newPlaylists: Array<{ uid: number; kind: number }>;
 };
 
-export type Podcasts = {
+export type PodcastsResponse = {
   type: string;
   typeForFrom: string;
   title: string;

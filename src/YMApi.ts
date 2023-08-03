@@ -36,10 +36,11 @@ import {
   ArtistTracksResponse,
   LikedTracks,
   ChartType,
-  ChartTracks,
-  NewReleases,
-  NewPlaylists,
-  Podcasts,
+  ChartTracksResponse,
+  NewReleasesResponse,
+  NewPlaylistsResponse,
+  PodcastsResponse,
+  StationTracksResponse,
 } from "./types";
 
 export default class YMApi {
@@ -131,48 +132,48 @@ export default class YMApi {
    * GET: /landing3/chart/{ChartType}
    * @returns chart of songs.
    */
-  getChart(ChartType: ChartType): Promise<ChartTracks> {
+  getChart(ChartType: ChartType): Promise<ChartTracksResponse> {
     const request = apiRequest()
       .setPath(`/landing3/chart/${ChartType}`)
       .addHeaders(this.getAuthHeader());
 
-    return this.httpClient.get(request) as Promise<ChartTracks>;
+    return this.httpClient.get(request) as Promise<ChartTracksResponse>;
   }
 
   /**
    * GET: /landing3/new-playlists
    * @returns new playlists (for you).
    */
-  getNewPlaylists(): Promise<NewPlaylists> {
+  getNewPlaylists(): Promise<NewPlaylistsResponse> {
     const request = apiRequest()
       .setPath("/landing3/new-playlists")
       .addHeaders(this.getAuthHeader());
 
-    return this.httpClient.get(request) as Promise<any>;
+    return this.httpClient.get(request) as Promise<NewPlaylistsResponse>;
   }
 
   /**
    * GET: /landing3/new-releases
    * @returns new releases.
    */
-  getNewReleases(): Promise<NewReleases> {
+  getNewReleases(): Promise<NewReleasesResponse> {
     const request = apiRequest()
       .setPath("/landing3/new-releases")
       .addHeaders(this.getAuthHeader());
 
-    return this.httpClient.get(request) as Promise<NewReleases>;
+    return this.httpClient.get(request) as Promise<NewReleasesResponse>;
   }
 
   /**
    * GET: /landing3/podcasts
    * @returns all podcasts.
    */
-  getPodcasts(): Promise<Podcasts> {
+  getPodcasts(): Promise<PodcastsResponse> {
     const request = apiRequest()
       .setPath("/landing3/podcasts")
       .addHeaders(this.getAuthHeader());
 
-    return this.httpClient.get(request) as Promise<any>;
+    return this.httpClient.get(request) as Promise<PodcastsResponse>;
   }
 
   /**
@@ -639,21 +640,25 @@ export default class YMApi {
   }
 
   /**
-   * @param stationId Example: user:onyourwave
+   * @param stationId Id of station. Example: user:onyourwave
+   * @param queue Unique id of prev track.
    * GET: /rotor/station/{stationId}/tracks
    * REQUIRES YOU TO BE LOGGED IN!
    * @returns tracks from station.
    */
-  getStationTracks(stationId: string): Promise<any> {
+  getStationTracks(
+    stationId: string,
+    queue: string | null
+  ): Promise<StationTracksResponse> {
     const request = apiRequest()
       .setPath(`/rotor/station/${stationId}/tracks`)
-      .addHeaders(this.getAuthHeader());
-
-    return this.httpClient.get(request) as Promise<any>;
+      .addHeaders(this.getAuthHeader())
+      .addQuery(queue ? { queue } : {});
+    return this.httpClient.get(request) as Promise<StationTracksResponse>;
   }
 
   /**
-   * @param stationId Example: user:onyourwave
+   * @param stationId Id of station. Example: user:onyourwave
    * GET: /rotor/station/{stationId}/info
    * @returns info of the station.
    */
