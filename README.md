@@ -5,13 +5,13 @@ This is a Node.js wrapper for the [Yandex.Music](http://music.yandex.ru/) API th
 ## Installation
 
 ```sh
-npm install ym-api
+npm install ym-api-meowed
 ```
 
 ## Usage
 
 ```js
-import { YMApi } from "ym-api";
+import { YMApi } from "ym-api-meowed";
 const api = new YMApi();
 
 (async () => {
@@ -38,6 +38,9 @@ This library provides following methods:
 
 #### Music
 
+- getChart
+- getNewReleases
+- getPodcasts
 - getGenres
 - search
 - searchArtists
@@ -47,6 +50,7 @@ This library provides following methods:
 
 #### Playlist
 
+- getNewPlaylists
 - getPlaylist
 - getPlaylists
 - getUserPlaylists
@@ -64,6 +68,9 @@ This library provides following methods:
 - getTrackSupplement
 - getTrackDownloadInfo
 - getTrackDirectLink
+- getSimmilarTracks
+- getDislikedTracks
+- getLikedTracks
 
 #### Album
 
@@ -75,6 +82,13 @@ This library provides following methods:
 
 - getArtist
 - getArtists
+
+#### Station
+
+- getAllStationsList
+- getRecomendedStationsList
+- getStationTracks
+- getStationInfo
 
 ### Wrapped API
 
@@ -103,3 +117,4 @@ Almost all methods of the wrapped api can be called with a entity id or url
 
 - [itsmepetrov/yandex-music-api](https://github.com/itsmepetrov/yandex-music-api)
 - [MarshalX/yandex-music-api](https://github.com/MarshalX/yandex-music-api)
+- [kontsevoye/ym-api](https://github.com/kontsevoye/ym-api)

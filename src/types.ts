@@ -631,3 +631,8 @@ export type PodcastsResponse = {
   title: string;
   podcasts: Array<number>;
 };
+
+export type SimmilarTracksResponse = {
+  track: Track;
+  simmilarTracks: Array<Track>;
+};

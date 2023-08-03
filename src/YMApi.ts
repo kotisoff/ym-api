@@ -41,6 +41,7 @@ import {
   NewPlaylistsResponse,
   PodcastsResponse,
   StationTracksResponse,
+  SimmilarTracksResponse,
 } from "./types";
 
 export default class YMApi {
@@ -522,6 +523,18 @@ export default class YMApi {
   }
 
   /**
+   * GET: /tracks/{track_id}/similar
+   * @returns simmilar tracks
+   */
+  getSimmilarTracks(trackId: TrackId): Promise<SimmilarTracksResponse> {
+    const request = apiRequest()
+      .setPath(`/tracks/${trackId}/similar`)
+      .addHeaders(this.getAuthHeader());
+
+    return this.httpClient.get(request) as Promise<SimmilarTracksResponse>;
+  }
+
+  /**
    * GET: /albums/[album_id]
    * @returns an album
    */
@@ -603,7 +616,9 @@ export default class YMApi {
    * @returns LikedTracks
    */
 
-  getLikedTracks(userId: number | string | null = null): Promise<DisOrLikedTracks>  {
+  getLikedTracks(
+    userId: number | string | null = null
+  ): Promise<DisOrLikedTracks> {
     const uid = [null, 0, ""].includes(userId) ? this.user.uid : userId;
     const request = apiRequest()
       .setPath(`/users/${uid}/likes/tracks`)
@@ -612,7 +627,9 @@ export default class YMApi {
     return this.httpClient.get(request) as Promise<DisOrLikedTracks>;
   }
 
-  getDislikedTracks(userId: number | string | null = null): Promise<DisOrLikedTracks>  {
+  getDislikedTracks(
+    userId: number | string | null = null
+  ): Promise<DisOrLikedTracks> {
     const uid = [null, 0, ""].includes(userId) ? this.user.uid : userId;
     const request = apiRequest()
       .setPath(`/users/${uid}/dislikes/tracks`)
