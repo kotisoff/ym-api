@@ -591,6 +591,9 @@ type StationTrack = {
 export type StationTracksResponse = {
   id: { type: string; tag: string };
   sequence: Array<StationTrack>;
+  batchId: string;
+  pumpkin: boolean;
+  radioSessionId: string;
 };
 
 type StationId = { type: string; tag: string };

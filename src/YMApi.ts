@@ -679,7 +679,7 @@ export default class YMApi {
    */
   getStationTracks(
     stationId: string,
-    queue: string | null
+    queue?: string
   ): Promise<StationTracksResponse> {
     const request = apiRequest()
       .setPath(`/rotor/station/${stationId}/tracks`)
