@@ -34,14 +34,17 @@ import {
   Artist,
   ArtistId,
   ArtistTracksResponse,
-  DisOrLikedTracks,
+  DisOrLikedTracksResponse,
   ChartType,
   ChartTracksResponse,
   NewReleasesResponse,
   NewPlaylistsResponse,
   PodcastsResponse,
-  StationTracksResponse,
   SimmilarTracksResponse,
+  StationTracksResponse,
+  StationInfoResponse,
+  AllStationsListResponse,
+  RecomendedStationsListResponse,
 } from "./types";
 
 export default class YMApi {
@@ -618,24 +621,24 @@ export default class YMApi {
 
   getLikedTracks(
     userId: number | string | null = null
-  ): Promise<DisOrLikedTracks> {
+  ): Promise<DisOrLikedTracksResponse> {
     const uid = [null, 0, ""].includes(userId) ? this.user.uid : userId;
     const request = apiRequest()
       .setPath(`/users/${uid}/likes/tracks`)
       .addHeaders(this.getAuthHeader());
 
-    return this.httpClient.get(request) as Promise<DisOrLikedTracks>;
+    return this.httpClient.get(request) as Promise<DisOrLikedTracksResponse>;
   }
 
   getDislikedTracks(
     userId: number | string | null = null
-  ): Promise<DisOrLikedTracks> {
+  ): Promise<DisOrLikedTracksResponse> {
     const uid = [null, 0, ""].includes(userId) ? this.user.uid : userId;
     const request = apiRequest()
       .setPath(`/users/${uid}/dislikes/tracks`)
       .addHeaders(this.getAuthHeader());
 
-    return this.httpClient.get(request) as Promise<DisOrLikedTracks>;
+    return this.httpClient.get(request) as Promise<DisOrLikedTracksResponse>;
   }
 
   /**
@@ -643,13 +646,13 @@ export default class YMApi {
    * GET: /rotor/stations/list
    * @returns list of stations.
    */
-  getAllStationsList(language: Language): Promise<any> {
+  getAllStationsList(language?: Language): Promise<AllStationsListResponse> {
     const request = apiRequest()
       .setPath(`/rotor/stations/list`)
       .addHeaders(this.getAuthHeader())
-      .setQuery({ language });
+      .setQuery(language ? { language } : {});
 
-    return this.httpClient.get(request) as Promise<any>;
+    return this.httpClient.get(request) as Promise<AllStationsListResponse>;
   }
 
   /**
@@ -657,12 +660,14 @@ export default class YMApi {
    * REQUIRES YOU TO BE LOGGED IN!
    * @returns list of recomended stations.
    */
-  getRecomendedStationsList(): Promise<any> {
+  getRecomendedStationsList(): Promise<RecomendedStationsListResponse> {
     const request = apiRequest()
       .setPath("/rotor/stations/dashboard")
       .addHeaders(this.getAuthHeader());
 
-    return this.httpClient.get(request) as Promise<any>;
+    return this.httpClient.get(
+      request
+    ) as Promise<RecomendedStationsListResponse>;
   }
 
   /**
@@ -688,11 +693,11 @@ export default class YMApi {
    * GET: /rotor/station/{stationId}/info
    * @returns info of the station.
    */
-  getStationInfo(stationId: string): Promise<any> {
+  getStationInfo(stationId: string): Promise<StationInfoResponse> {
     const request = apiRequest()
       .setPath(`/rotor/station/${stationId}/info`)
       .addHeaders(this.getAuthHeader());
 
-    return this.httpClient.get(request) as Promise<any>;
+    return this.httpClient.get(request) as Promise<StationInfoResponse>;
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "ym-api-meowed",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "A Node.js wrapper for the Yandex.Music API (Unofficial) http://music.yandex.ru",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,7 +14,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kontsevoye/ym-api.git"
+    "url": "https://github.com/kotisoff/ym-api-meowed.git"
   },
   "keywords": [
     "yandex",

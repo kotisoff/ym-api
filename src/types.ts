@@ -273,12 +273,11 @@ type ArtistCounts = {
   alsoAlbums: number;
   alsoTracks: number;
 };
-type Region = "RUSSIA_PREMIUM" | "RUSSIA" | string;
 type AlbumType = "compilation" | string;
-type TrackPosition = { volume: number; index: number };
 type Label = { id: number; name: string } | string;
 
 export type AlbumVolume = Array<Track>;
+type AlbumCustomWave = { title: string; animationUrl: string; header: string };
 export type Album = {
   id: number;
   title: string;
@@ -293,7 +292,7 @@ export type Album = {
   metaTagId?: string;
   trackCount: number;
   recent?: boolean;
-  storageDir?: string;
+  // storageDir?: string;
   veryImportant: boolean;
   artists: Array<Artist>;
   labels?: Array<Label>;
@@ -304,27 +303,38 @@ export type Album = {
   availableForMobile: boolean;
   availablePartially: boolean;
   bests: Array<number>;
-  duplicates: Array<Album>;
-  customWave?: { title: string; animationUrl: string; header: string };
+  duplicates?: Array<Album>;
+  customWave?: AlbumCustomWave;
   sortOrder?: string;
   volumes?: Array<AlbumVolume>;
-  trackPosition: TrackPosition;
-  availableRegions?: Array<Region>;
-  originalReleaseYear?: number;
-  likesCount?: number;
-  regions?: Array<Region>;
-  pager: Pager;
+  // trackPosition?: TrackPosition;
+  // availableRegions?: Array<Region>;
+  // originalReleaseYear?: number;
+  // likesCount?: number;
+  // regions?: Array<Region>;
+  pager?: Pager;
 };
 export type AlbumWithTracks = Required<Album>;
 
 type TrackMajor = { id: number; name: string };
-type TrackNormalization = { gain: number; peak: number };
+type TrackContentWarning = "explicit" | string;
+type TrackR128 = { i: number; tp: number };
+type TrackFade = {
+  inStart: number;
+  inStop: number;
+  outStart: number;
+  outStop: number;
+};
+type TrackLyricsInfo = {
+  hasAvailableSyncLyrics: boolean;
+  hasAvailableTextLyrics: boolean;
+};
 export type Track = {
   id: number;
   realId: string;
   title: string;
+  contentWarning?: TrackContentWarning;
   version: string;
-  trackSource: string;
   major?: TrackMajor;
   available: boolean;
   availableForPremiumUsers: boolean;
@@ -334,38 +344,53 @@ export type Track = {
   durationMs: number;
   storageDir?: string;
   fileSize?: number;
-  r128: { i: number; tp: number };
-  fade: { inStart: number; inStop: number; outStart: number; outStop: number };
+  r128: TrackR128;
+  fade: TrackFade;
   previewDurationMs?: number;
   artists: Array<Artist>;
   albums: Array<Album>;
   lyricsAvailable: boolean;
-  rememberPosition: boolean;
   coverUri: string;
-  explicit: boolean;
-  regions: Array<Region>;
-  normalization?: TrackNormalization;
-  type?: string;
-  ogImage?: string;
+  ogImage: string;
+  rememberPosition: boolean;
+  type: string;
+  trackSharingFlag?: string;
+  lyricsInfo: TrackLyricsInfo;
+  trackSource: string;
 };
 
+type ArtistRatings = { week: number; month: number; day: number };
+type ArtistLink = {
+  title: string;
+  href: string;
+  type: string;
+  socialNetwork: string;
+};
 export type Artist = {
   id: number;
   name: string;
   various: boolean;
   composer: boolean;
-  ticketsAvailable?: boolean;
   cover: ArtistCover;
-  counts?: ArtistCounts;
   genres: Array<Genre>;
-  popularTracks?: Array<Track>;
-  regions?: Array<Region>;
-  albums?: Array<Album>;
-  alsoAlbums?: Array<Album>;
-  similarArtists?: Array<Artist>;
+  disclaimers: Array<any>;
+  ogImage?: string;
+  noPicturesFromSearch?: boolean;
+  counts?: ArtistCounts;
+  available?: boolean;
+  ratings?: ArtistRatings;
+  links?: Array<ArtistLink>;
+  ticketsAvailable?: boolean;
+  likesCount: number;
+  dbAliases: Array<string>;
+  // popularTracks?: Array<Track>;
+  // regions?: Array<Region>;
+  // albums?: Array<Album>;
+  // alsoAlbums?: Array<Album>;
+  // similarArtists?: Array<Artist>;
 };
 export type FilledArtist = {
-  artist: Artist;
+  artist: Required<Artist>;
   albums: Array<Album>;
   alsoAlbums: Array<Album>;
   similarArtists: Array<Artist>;
@@ -422,7 +447,7 @@ export type SearchAlbumsResponse = Required<
 export type GetTrackResponse = Array<Track>;
 
 export type Language = "en" | "ru" | string;
-type Lirics = {
+type Lyrics = {
   id: number;
   lyrics: string;
   fullLyrics: string;
@@ -441,7 +466,7 @@ type Video = {
 };
 export type GetTrackSupplementResponse = {
   id: number;
-  lyrics: Lirics;
+  lyrics: Lyrics;
   videos: Array<Video>;
 };
 
@@ -543,7 +568,7 @@ type TrackMeta = {
   timestamp: string;
 };
 
-export type DisOrLikedTracks = {
+export type DisOrLikedTracksResponse = {
   library: {
     revision: number;
     uid: number;
@@ -566,6 +591,86 @@ type StationTrack = {
 export type StationTracksResponse = {
   id: { type: string; tag: string };
   sequence: Array<StationTrack>;
+};
+
+type StationId = { type: string; tag: string };
+type StationSettings = {
+  language: string;
+  mood?: number;
+  energy?: number;
+  moodEnergy?: string;
+  diversity: string;
+};
+type StationAdParams = {
+  partnerId: string;
+  categoryId: string;
+  pageRef: string;
+  targetRef: string;
+  otherParams: string;
+  adVolume: number;
+};
+type StationRestrictionsValue = {
+  value: number;
+  name: string;
+  imageUrl?: string;
+  unspecified?: boolean;
+  serializedSeed?: string;
+};
+type StationRestrictionsOption = {
+  type: string;
+  name: string;
+  possibleValues?: Array<Required<StationRestrictionsValue>>;
+  min?: StationRestrictionsValue;
+  max?: StationRestrictionsValue;
+};
+type StationRestrictions = {
+  diversity: Required<Omit<Omit<StationRestrictionsOption, "min">, "max">>;
+  language: Required<Omit<Omit<StationRestrictionsOption, "min">, "max">>;
+  mood?: Required<Omit<StationRestrictionsOption, "possibleValues">>;
+  energy?: Required<Omit<StationRestrictionsOption, "possibleValues">>;
+  moodEnergy?: Required<Omit<Omit<StationRestrictionsOption, "min">, "max">>;
+};
+type StationData = {
+  artists: Array<Artist>;
+  title?: string;
+  description?: string;
+  imageUri?: string;
+};
+
+type StationInfo = {
+  station: {
+    id: StationId;
+    parentId?: StationId;
+    name: string;
+    icon: RadioIcon;
+    mtsIcon: RadioIcon;
+    fullImageUrl: string;
+    mtsFullImageUrl?: string;
+    idForFrom: string;
+    restrictions: Required<Omit<StationRestrictions, "moodEnergy">>;
+    restrictions2: Required<Omit<Omit<StationRestrictions, "mood">, "energy">>;
+    listeners?: number;
+    visibility?: string;
+    login?: string;
+    displayName?: string;
+    fullName?: string;
+  };
+  data?: StationData;
+  settings: Required<Omit<StationInfo, "moodEnergy">>;
+  settings2: Required<Omit<Omit<StationSettings, "mood">, "energy">>;
+  adParams: StationAdParams;
+  rupTitle: string;
+  rupDescription: string;
+};
+
+export type StationInfoResponse = Array<StationInfo>;
+
+export type AllStationsListResponse = Array<StationInfo>;
+
+export type RecomendedStationsListResponse = {
+  dashboardId: string;
+  stations: Array<StationInfo>;
+  pumpkin: boolean;
 };
 
 export type ChartTracksResponse = {
