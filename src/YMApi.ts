@@ -45,6 +45,8 @@ import {
   StationInfoResponse,
   AllStationsListResponse,
   RecomendedStationsListResponse,
+  QueuesResponse,
+  QueueResponse,
 } from "./types";
 
 export default class YMApi {
@@ -63,6 +65,13 @@ export default class YMApi {
   private getAuthHeader(): { Authorization: string } {
     return {
       Authorization: `OAuth ${this.user.token}`,
+    };
+  }
+
+  private getFakeDeviceHeader(): { "X-Yandex-Music-Device": string } {
+    return {
+      "X-Yandex-Music-Device":
+        "os=unknown; os_version=unknown; manufacturer=unknown; model=unknown; clid=; device_id=unknown; uuid=unknown",
     };
   }
 
@@ -615,8 +624,9 @@ export default class YMApi {
   }
 
   /**
+   * GET: /users/{userId}/likes/tracks
    * @param userId User id. Nullable.
-   * @returns LikedTracks
+   * @returns Liked Tracks
    */
 
   getLikedTracks(
@@ -630,6 +640,12 @@ export default class YMApi {
     return this.httpClient.get(request) as Promise<DisOrLikedTracksResponse>;
   }
 
+  /**
+   * GET: /users/{userId}/dislikes/tracks
+   * @param userId User id. Nullable.
+   * @returns Disliked Tracks
+   */
+
   getDislikedTracks(
     userId: number | string | null = null
   ): Promise<DisOrLikedTracksResponse> {
@@ -642,8 +658,8 @@ export default class YMApi {
   }
 
   /**
-   * @param language Language of station list
    * GET: /rotor/stations/list
+   * @param language Language of station list
    * @returns list of stations.
    */
   getAllStationsList(language?: Language): Promise<AllStationsListResponse> {
@@ -671,10 +687,10 @@ export default class YMApi {
   }
 
   /**
-   * @param stationId Id of station. Example: user:onyourwave
-   * @param queue Unique id of prev track.
    * GET: /rotor/station/{stationId}/tracks
    * REQUIRES YOU TO BE LOGGED IN!
+   * @param stationId Id of station. Example: user:onyourwave
+   * @param queue Unique id of prev track.
    * @returns tracks from station.
    */
   getStationTracks(
@@ -689,8 +705,8 @@ export default class YMApi {
   }
 
   /**
-   * @param stationId Id of station. Example: user:onyourwave
    * GET: /rotor/station/{stationId}/info
+   * @param stationId Id of station. Example: user:onyourwave
    * @returns info of the station.
    */
   getStationInfo(stationId: string): Promise<StationInfoResponse> {
@@ -699,5 +715,33 @@ export default class YMApi {
       .addHeaders(this.getAuthHeader());
 
     return this.httpClient.get(request) as Promise<StationInfoResponse>;
+  }
+
+  /**
+   * GET: /queues
+   * @returns queues without tracks
+   */
+
+  getQueues(): Promise<QueuesResponse> {
+    const request = apiRequest()
+      .setPath("/queues")
+      .addHeaders(this.getFakeDeviceHeader())
+      .addHeaders(this.getAuthHeader());
+
+    return this.httpClient.get(request) as Promise<QueuesResponse>;
+  }
+
+  /**
+   * GET: /queues/{queueId}
+   * @param queueId Queue id.
+   * @returns queue data with(?) tracks.
+   */
+
+  getQueue(queueId: string): Promise<QueueResponse> {
+    const request = apiRequest()
+      .setPath(`/queues/${queueId}`)
+      .addHeaders(this.getAuthHeader());
+
+    return this.httpClient.get(request) as Promise<QueueResponse>;
   }
 }
