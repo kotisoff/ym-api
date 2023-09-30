@@ -535,6 +535,22 @@ export default class YMApi {
   }
 
   /**
+   * @returns track sharing link
+   */
+  async getTrackShareLink(track: TrackId | Track): Promise<any> {
+    let albumid = 0,
+      trackid = 0;
+    if (typeof track === "object") {
+      albumid = track.albums[0].id;
+      trackid = track.id;
+    } else {
+      albumid = (await this.getSingleTrack(track)).albums[0].id;
+      trackid = track;
+    }
+    return `https://music.yandex.ru/album/${albumid}/track/${trackid}`;
+  }
+
+  /**
    * GET: /tracks/{track_id}/similar
    * @returns simmilar tracks
    */

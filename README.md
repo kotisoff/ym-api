@@ -68,6 +68,7 @@ This library provides following methods:
 - getTrackSupplement
 - getTrackDownloadInfo
 - getTrackDirectLink
+- getTrackShareLink
 - getSimmilarTracks
 - getDislikedTracks
 - getLikedTracks
