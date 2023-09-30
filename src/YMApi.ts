@@ -537,7 +537,7 @@ export default class YMApi {
   /**
    * @returns track sharing link
    */
-  async getTrackShareLink(track: TrackId | Track): Promise<any> {
+  async getTrackShareLink(track: TrackId | Track): Promise<string> {
     let albumid = 0,
       trackid = 0;
     if (typeof track === "object") {
