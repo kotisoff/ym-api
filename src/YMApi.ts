@@ -1,4 +1,9 @@
-import { authRequest, apiRequest, directLinkRequest } from "./PreparedRequest";
+import {
+  authRequest,
+  clckApiRequest,
+  apiRequest,
+  directLinkRequest,
+} from "./PreparedRequest";
 import fallbackConfig from "./config";
 import HttpClient from "./HttpClient";
 import { parseStringPromise } from "xml2js";
@@ -518,7 +523,10 @@ export default class YMApi {
   /**
    * @returns track direct link
    */
-  async getTrackDirectLink(trackDownloadUrl: string): Promise<string> {
+  async getTrackDirectLink(
+    trackDownloadUrl: string,
+    short: Boolean = false
+  ): Promise<string> {
     const request = directLinkRequest(trackDownloadUrl);
     const xml = await this.httpClient.get(request);
     const parsedXml = await parseStringPromise(xml);
@@ -530,8 +538,9 @@ export default class YMApi {
       .createHash("md5")
       .update("XGRlBW9FXlekgbPrRHuSiA" + path.slice(1) + s)
       .digest("hex");
-
-    return `https://${host}/get-mp3/${sign}/${ts}${path}`;
+    const link = `https://${host}/get-mp3/${sign}/${ts}${path}`;
+    if (short) return await this.getShortenedLink(link);
+    else return link;
   }
 
   /**
@@ -759,5 +768,16 @@ export default class YMApi {
       .addHeaders(this.getAuthHeader());
 
     return this.httpClient.get(request) as Promise<QueueResponse>;
+  }
+
+  /**
+   * GET: clck.ru/--
+   * @param URL Url to something
+   * @returns clck.ru shortened link
+   */
+
+  getShortenedLink(URL: string): Promise<string> {
+    const request = clckApiRequest().setPath("/--").addQuery({ url: URL });
+    return this.httpClient.get(request) as Promise<string>;
   }
 }

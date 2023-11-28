@@ -99,10 +99,12 @@ export default class WrappedYMApi {
 
   async getMp3DownloadUrl(
     track: TrackId | TrackUrl,
+    short: Boolean = false,
     quality: DownloadTrackQuality = DownloadTrackQuality.High
   ): Promise<string> {
     return this.api.getTrackDirectLink(
-      (await this.getMp3DownloadInfo(track, quality)).downloadInfoUrl
+      (await this.getMp3DownloadInfo(track, quality)).downloadInfoUrl,
+      short
     );
   }
 

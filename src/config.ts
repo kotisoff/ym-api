@@ -4,6 +4,11 @@ export default {
     port: 443,
     scheme: "https",
   },
+  clckApi: {
+    host: "clck.ru",
+    port: 443,
+    scheme: "https",
+  },
   authApi: {
     host: "oauth.yandex.ru",
     port: 443,

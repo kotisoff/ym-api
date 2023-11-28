@@ -1,5 +1,5 @@
 {
-  "extends": "./node12_ts.json",
+  "extends": "./node_ts.json",
   "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts"],
   "compilerOptions": {
