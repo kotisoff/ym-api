@@ -102,7 +102,6 @@ export default class YMApi {
     }
     this.user.username = config.username;
     this.user.password = config.password;
-    console.log(authRequest());
 
     const data = (await this.httpClient.get(
       authRequest().setPath("/token").setQuery({
