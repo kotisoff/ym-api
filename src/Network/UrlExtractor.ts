@@ -1,4 +1,4 @@
-import { UrlExtractorInterface } from "./types";
+import { UrlExtractorInterface } from "../Types";
 
 export default class UrlExtractor implements UrlExtractorInterface {
   private extract<T extends string>(

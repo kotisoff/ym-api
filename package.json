@@ -1,6 +1,6 @@
 {
   "name": "ym-api-meowed",
-  "version": "1.3.1",
+  "version": "1.3.3",
   "description": "A Node.js wrapper for the Yandex.Music API (Unofficial) http://music.yandex.ru",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,7 +9,7 @@
     "Anton Petrov (https://itsmepetrov.com)",
     "Evgeny Kontsevoy (https://github.com/kontsevoye)",
     "Donnevtis (https://github.com/Donnevtis)",
-    "Неофициально вписал себя - KotIsOff (https://github.com/kotisoff)"
+    "KotIsOff (https://github.com/kotisoff)"
   ],
   "license": "MIT",
   "repository": {
@@ -31,7 +31,6 @@
     "@types/node": "^14.14.16",
     "@types/xml2js": "^0.4.7",
     "prettier": "2.2.1",
-    "ts-node": "^9.1.1",
     "typescript": "^4.1.3"
   },
   "scripts": {

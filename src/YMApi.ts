@@ -1,11 +1,10 @@
 import {
   authRequest,
-  clckApiRequest,
   apiRequest,
   directLinkRequest,
-} from "./PreparedRequest";
-import fallbackConfig from "./config";
-import HttpClient from "./HttpClient";
+} from "./PreparedRequest/index";
+import fallbackConfig from "./PreparedRequest/config";
+import HttpClient from "./Network/HttpClient";
 import { parseStringPromise } from "xml2js";
 import * as crypto from "crypto";
 import {
@@ -19,12 +18,10 @@ import {
   Language,
   GetTrackSupplementResponse,
   GetTrackDownloadInfoResponse,
-  ObjectResponse,
   GetFeedResponse,
   GetAccountStatusResponse,
   Track,
   TrackId,
-  HttpClientInterface,
   ApiUser,
   SearchOptions,
   ConcreteSearchOptions,
@@ -52,7 +49,9 @@ import {
   RecomendedStationsListResponse,
   QueuesResponse,
   QueueResponse,
-} from "./types";
+} from "./Types";
+import { HttpClientInterface, ObjectResponse } from "./Types/request";
+import shortenLink from "./ClckApi";
 
 export default class YMApi {
   private user: ApiUser = {
@@ -538,7 +537,7 @@ export default class YMApi {
       .update("XGRlBW9FXlekgbPrRHuSiA" + path.slice(1) + s)
       .digest("hex");
     const link = `https://${host}/get-mp3/${sign}/${ts}${path}`;
-    if (short) return await this.getShortenedLink(link);
+    if (short) return await shortenLink(link);
     else return link;
   }
 
@@ -767,16 +766,5 @@ export default class YMApi {
       .addHeaders(this.getAuthHeader());
 
     return this.httpClient.get(request) as Promise<QueueResponse>;
-  }
-
-  /**
-   * GET: clck.ru/--
-   * @param URL Url to something
-   * @returns clck.ru shortened link
-   */
-
-  getShortenedLink(URL: string): Promise<string> {
-    const request = clckApiRequest().setPath("/--").addQuery({ url: URL });
-    return this.httpClient.get(request) as Promise<string>;
   }
 }

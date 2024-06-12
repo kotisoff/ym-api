@@ -1,4 +1,4 @@
-import Request from "../Request";
+import Request from "../Network/Request";
 import { URL } from "url";
 
 export default function directLinkRequest(url: string) {

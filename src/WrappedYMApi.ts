@@ -20,9 +20,9 @@ import {
   ArtistId,
   ArtistUrl,
   FilledArtist,
-} from "./types";
+} from "./Types";
 import YMApi from "./YMApi";
-import UrlExtractor from "./UrlExtractor";
+import UrlExtractor from "./Network/UrlExtractor";
 
 export default class WrappedYMApi {
   constructor(

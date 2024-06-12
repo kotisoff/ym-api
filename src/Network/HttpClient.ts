@@ -4,7 +4,7 @@ import {
   Method,
   Response,
   RequestInterface,
-} from "./types";
+} from "../Types/request";
 
 export default class HttpClient implements HttpClientInterface {
   async _sendRequestAxios(
@@ -24,20 +24,11 @@ export default class HttpClient implements HttpClientInterface {
         ...{ "content-type": "application/x-www-form-urlencoded" },
       };
     }
-    try {
-      const { data } = await axios(axiosRequest);
-      if (data.result) {
-        return data.result;
-      } else {
-        return data;
-      }
-    } catch (e: any) {
-      console.error({
-        status: e.response.status,
-        headers: e.response.headers,
-        data: e.response.data,
-      });
-      throw new Error(`Request failed: ${e.message}`);
+    const { data } = await axios(axiosRequest);
+    if (data.result) {
+      return data.result;
+    } else {
+      return data;
     }
   }
 

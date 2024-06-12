@@ -5,7 +5,7 @@ import {
   RequestBodyData,
   RequestConfig,
   RequestInterface,
-} from "./types";
+} from "../Types/request";
 
 export default class Request implements RequestInterface {
   private scheme: string;
@@ -15,6 +15,7 @@ export default class Request implements RequestInterface {
   private headers: RequestHeaders;
   private query: RequestQuery;
   private bodyData: RequestBodyData;
+
   constructor(config: RequestConfig) {
     this.scheme = config.scheme;
     this.host = config.host;
@@ -25,9 +26,9 @@ export default class Request implements RequestInterface {
     this.query = config.query || {};
     this.bodyData = config.bodyData || {};
   }
+
   setPath(path: string): RequestInterface {
     this.path = path;
-
     return this;
   }
   getHeaders(): RequestHeaders {
@@ -35,7 +36,6 @@ export default class Request implements RequestInterface {
   }
   setHeaders(headers: RequestHeaders): RequestInterface {
     this.headers = headers;
-
     return this;
   }
   addHeaders(headers: RequestHeaders): RequestInterface {
@@ -46,7 +46,6 @@ export default class Request implements RequestInterface {
         this.headers[key] = headers[key];
       }
     }
-
     return this;
   }
   getQuery(): RequestQuery {
@@ -54,7 +53,6 @@ export default class Request implements RequestInterface {
   }
   setQuery(query: RequestQuery): RequestInterface {
     this.query = query;
-
     return this;
   }
   addQuery(query: RequestQuery): RequestInterface {
@@ -65,7 +63,6 @@ export default class Request implements RequestInterface {
         this.query[key] = query[key];
       }
     }
-
     return this;
   }
   getQueryAsString(): string {

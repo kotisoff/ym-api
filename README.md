@@ -16,8 +16,6 @@ const api = new YMApi();
 
 (async () => {
   try {
-    await api.init({ username: "example@yandex.ru", password: "password" });
-    // OR
     await api.init({ access_token: "EXAMPLE_TOKEN", uid: 0 });
     const result = await api.searchArtists("gorillaz");
     console.log({ result });
@@ -27,8 +25,7 @@ const api = new YMApi();
 })();
 ```
 
-To get a token you need to copy it quickly [here](https://oauth.yandex.ru/authorize?response_type=token&client_id=23cabbbdc6cd418abb4b39c32c41195d).
-Uid you can get from query [here](https://mail.yandex.ru/).
+Get token from [here](https://oauth.yandex.ru/authorize?response_type=token&client_id=23cabbbdc6cd418abb4b39c32c41195d) and uid from [here](https://mail.yandex.ru/).
 
 ## Available methods
 
