@@ -71,7 +71,7 @@ This library provides following methods:
 - getTrackDownloadInfo
 - getTrackDirectLink
 - getTrackShareLink
-- getSimmilarTracks
+- getSimilarTracks
 - getDislikedTracks
 - getLikedTracks
 
