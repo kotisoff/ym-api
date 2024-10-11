@@ -499,12 +499,12 @@ export type ApiUser = {
 
 export enum DownloadTrackQuality {
   High = "high",
-  Low = "low",
+  Low = "low"
 }
 
 export enum DownloadTrackCodec {
   MP3 = "mp3",
-  AAC = "aac",
+  AAC = "aac"
 }
 
 export type SearchOptions = {

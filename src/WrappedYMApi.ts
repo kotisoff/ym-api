@@ -19,7 +19,7 @@ import {
   AlbumWithTracks,
   ArtistId,
   ArtistUrl,
-  FilledArtist,
+  FilledArtist
 } from "./Types";
 import YMApi from "./YMApi";
 import UrlExtractor from "./Network/UrlExtractor";

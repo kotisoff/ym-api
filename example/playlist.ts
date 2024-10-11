@@ -8,7 +8,7 @@ const api = new YMApi();
 
     const name = "Test Playlist";
     const options: { visibility: "public" | "private" } = {
-      visibility: "public",
+      visibility: "public"
     };
     const playlist = await api.createPlaylist(name, options);
     console.log("New playlist has been created:");
@@ -19,7 +19,7 @@ const api = new YMApi();
     const tracks = [
       { id: 20599729, albumId: 2347459 },
       { id: 20069589, albumId: 2265364 },
-      { id: 15924630, albumId: 1795812 },
+      { id: 15924630, albumId: 1795812 }
     ];
     const playlistWithTracks = await api.addTracksToPlaylist(
       playlist.kind,

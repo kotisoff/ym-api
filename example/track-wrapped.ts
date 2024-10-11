@@ -23,7 +23,7 @@ const wrappedApi = new WrappedYMApi();
         title: `${track.track.title} - ${track.track.artists
           .map((artist) => artist.name)
           .join(", ")}`,
-        downloadUrl: await wrappedApi.getMp3DownloadUrl(track.id),
+        downloadUrl: await wrappedApi.getMp3DownloadUrl(track.id)
       }))
     );
     console.log(tracks);

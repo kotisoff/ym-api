@@ -1,7 +1,7 @@
 import {
   authRequest,
   apiRequest,
-  directLinkRequest,
+  directLinkRequest
 } from "./PreparedRequest/index";
 import fallbackConfig from "./PreparedRequest/config";
 import HttpClient from "./Network/HttpClient";
@@ -48,7 +48,7 @@ import {
   AllStationsListResponse,
   RecomendedStationsListResponse,
   QueuesResponse,
-  QueueResponse,
+  QueueResponse
 } from "./Types";
 import { HttpClientInterface, ObjectResponse } from "./Types/request";
 import shortenLink from "./ClckApi";
@@ -58,7 +58,7 @@ export default class YMApi {
     password: "",
     token: "",
     uid: 0,
-    username: "",
+    username: ""
   };
 
   constructor(
@@ -68,14 +68,14 @@ export default class YMApi {
 
   private getAuthHeader(): { Authorization: string } {
     return {
-      Authorization: `OAuth ${this.user.token}`,
+      Authorization: `OAuth ${this.user.token}`
     };
   }
 
   private getFakeDeviceHeader(): { "X-Yandex-Music-Device": string } {
     return {
       "X-Yandex-Music-Device":
-        "os=unknown; os_version=unknown; manufacturer=unknown; model=unknown; clid=; device_id=unknown; uuid=unknown",
+        "os=unknown; os_version=unknown; manufacturer=unknown; model=unknown; clid=; device_id=unknown; uuid=unknown"
     };
   }
 
@@ -90,7 +90,7 @@ export default class YMApi {
       this.user.uid = config.uid;
       return {
         access_token: config.access_token,
-        uid: config.uid,
+        uid: config.uid
       };
     }
 
@@ -108,7 +108,7 @@ export default class YMApi {
         username: this.user.username,
         password: this.user.password,
         client_id: this.config.oauth.CLIENT_ID,
-        client_secret: this.config.oauth.CLIENT_SECRET,
+        client_secret: this.config.oauth.CLIENT_SECRET
       })
     )) as ObjectResponse;
 
@@ -222,7 +222,7 @@ export default class YMApi {
         type,
         text: query,
         page,
-        nococrrect,
+        nococrrect
       });
 
     if (options.pageSize !== void 0) {
@@ -243,7 +243,7 @@ export default class YMApi {
   ): Promise<SearchArtistsResponse> {
     return this.search(query, {
       ...options,
-      type: "artist",
+      type: "artist"
     }) as Promise<SearchArtistsResponse>;
   }
 
@@ -258,7 +258,7 @@ export default class YMApi {
   ): Promise<SearchTracksResponse> {
     return this.search(query, {
       ...options,
-      type: "track",
+      type: "track"
     }) as Promise<SearchTracksResponse>;
   }
 
@@ -273,7 +273,7 @@ export default class YMApi {
   ): Promise<SearchAlbumsResponse> {
     return this.search(query, {
       ...options,
-      type: "album",
+      type: "album"
     }) as Promise<SearchAlbumsResponse>;
   }
 
@@ -288,7 +288,7 @@ export default class YMApi {
   ): Promise<SearchAllResponse> {
     return this.search(query, {
       ...options,
-      type: "all",
+      type: "all"
     }) as Promise<SearchAllResponse>;
   }
 
@@ -345,7 +345,7 @@ export default class YMApi {
       .setQuery({
         kinds,
         mixed,
-        "rich-tracks": richTracks,
+        "rich-tracks": richTracks
       });
 
     return this.httpClient.get(request) as Promise<Array<Playlist>>;
@@ -366,7 +366,7 @@ export default class YMApi {
       .addHeaders(this.getAuthHeader())
       .setBodyData({
         title: name,
-        visibility,
+        visibility
       });
 
     return this.httpClient.post(request) as Promise<Playlist>;
@@ -395,7 +395,7 @@ export default class YMApi {
       .setPath(`/users/${this.user.uid}/playlists/${playlistId}/name`)
       .addHeaders(this.getAuthHeader())
       .setBodyData({
-        value: name,
+        value: name
       });
 
     return this.httpClient.post(request) as Promise<Playlist>;
@@ -423,10 +423,10 @@ export default class YMApi {
           {
             op: "insert",
             at,
-            tracks: tracks,
-          },
+            tracks: tracks
+          }
         ]),
-        revision: String(revision),
+        revision: String(revision)
       });
 
     return this.httpClient.post(request) as Promise<Playlist>;
@@ -456,10 +456,10 @@ export default class YMApi {
             op: "delete",
             from,
             to,
-            tracks,
-          },
+            tracks
+          }
         ]),
-        revision: String(revision),
+        revision: String(revision)
       });
 
     return this.httpClient.post(request) as Promise<Playlist>;
@@ -636,7 +636,7 @@ export default class YMApi {
       .setPath(`/artists/${artistId}/tracks`)
       .addHeaders(this.getAuthHeader())
       .setQuery({
-        page,
+        page
       });
 
     if (options.pageSize !== void 0) {

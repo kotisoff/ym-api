@@ -7,6 +7,6 @@ export default function directLinkRequest(url: string) {
     scheme: parsedUrl.protocol.replace(":", ""),
     host: parsedUrl.host,
     port: parsedUrl.protocol === "https:" ? 443 : 80,
-    path: `${parsedUrl.pathname}${parsedUrl.search}`,
+    path: `${parsedUrl.pathname}${parsedUrl.search}`
   });
 }

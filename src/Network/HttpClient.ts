@@ -3,7 +3,7 @@ import {
   HttpClientInterface,
   Method,
   Response,
-  RequestInterface,
+  RequestInterface
 } from "../Types/request";
 
 export default class HttpClient implements HttpClientInterface {
@@ -15,13 +15,13 @@ export default class HttpClient implements HttpClientInterface {
       method,
       url: request.getURL(),
       headers: request.getHeaders(),
-      data: {},
+      data: {}
     };
     if (["PUT", "POST", "DELETE", "PATCH"].includes(method.toUpperCase())) {
       axiosRequest.data = request.getBodyDataString();
       axiosRequest.headers = {
         ...axiosRequest.headers,
-        ...{ "content-type": "application/x-www-form-urlencoded" },
+        ...{ "content-type": "application/x-www-form-urlencoded" }
       };
     }
     const { data } = await axios(axiosRequest);

@@ -4,7 +4,7 @@ import {
   RequestQuery,
   RequestBodyData,
   RequestConfig,
-  RequestInterface,
+  RequestInterface
 } from "../Types/request";
 
 export default class Request implements RequestInterface {
