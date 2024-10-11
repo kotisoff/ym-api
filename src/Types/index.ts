@@ -700,9 +700,9 @@ export type PodcastsResponse = {
   podcasts: Array<number>;
 };
 
-export type SimmilarTracksResponse = {
+export type SimilarTracksResponse = {
   track: Track;
-  simmilarTracks: Array<Track>;
+  similarTracks: Array<Track>;
 };
 
 type QueueContext = {

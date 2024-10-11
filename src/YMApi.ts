@@ -42,7 +42,7 @@ import {
   NewReleasesResponse,
   NewPlaylistsResponse,
   PodcastsResponse,
-  SimmilarTracksResponse,
+  SimilarTracksResponse,
   StationTracksResponse,
   StationInfoResponse,
   AllStationsListResponse,
@@ -561,12 +561,12 @@ export default class YMApi {
    * GET: /tracks/{track_id}/similar
    * @returns simmilar tracks
    */
-  getSimmilarTracks(trackId: TrackId): Promise<SimmilarTracksResponse> {
+  getSimilarTracks(trackId: TrackId): Promise<SimilarTracksResponse> {
     const request = apiRequest()
       .setPath(`/tracks/${trackId}/similar`)
       .addHeaders(this.getAuthHeader());
 
-    return this.httpClient.get(request) as Promise<SimmilarTracksResponse>;
+    return this.httpClient.get(request) as Promise<SimilarTracksResponse>;
   }
 
   /**
